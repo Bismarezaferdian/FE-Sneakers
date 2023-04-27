@@ -9,6 +9,7 @@ import Navbar from "../components/Navbar";
 import { deleteProductCart, getCart, updatecart } from "../redux/apiCall";
 import { addQty, removeQty } from "../redux/cartRedux";
 import { mobile } from "../responsive";
+import { Link } from "react-router-dom";
 var debounce = require("lodash.debounce");
 
 const Container = styled.div``;
@@ -164,7 +165,7 @@ const SummaryItemPrice = styled.span`
   opacity: 0.8;
 `;
 
-const Button = styled.button`
+const Button = styled(Link)`
   width: 100%;
   /* padding: 10px; */
   background-color: #3330e4;
@@ -183,11 +184,11 @@ const Button = styled.button`
 const Cart = () => {
   const cart = useSelector((state) => state?.cart);
   const { error, isFetch } = useSelector((state) => state?.cart);
-  console.log(error, isFetch);
   const userId = useSelector((state) => state.user.currentUser?._id);
   // const userId = _id;
   // const userId = "";
   const dispatch = useDispatch();
+  console.log(cart);
 
   useEffect(() => {
     getCart(userId, dispatch);
@@ -250,7 +251,7 @@ const Cart = () => {
             {cart?.products?.map((item, i) => (
               <Product key={i}>
                 <ProductDetail>
-                  <Image src={item.imgDisplay.imgUrl} />
+                  <Image src={item.imgDisplay} />
                   <Details>
                     <ProductName>
                       <b>Product:</b>
@@ -259,9 +260,12 @@ const Cart = () => {
                     <ProductId>
                       <b>ID:</b> {item._id}
                     </ProductId>
-                    <ProductColor color="black" />
+                    <b>Color:</b> <ProductColor color={item.variant.color} />
                     <ProductSize>
-                      <b>Size:</b> {item.size}
+                      <b>Size:</b> {item.variant.size}
+                    </ProductSize>
+                    <ProductSize>
+                      <p>sisa stock:{item.variant.stock}</p>
                     </ProductSize>
                   </Details>
                 </ProductDetail>
@@ -307,7 +311,7 @@ const Cart = () => {
               <SummaryItemText>Total</SummaryItemText>
               <SummaryItemPrice>Rp.{cart?.total}</SummaryItemPrice>
             </SummaryItem>
-            <Button>CHECKOUT NOW</Button>
+            <Button to={"/checkout"}>CHECKOUT NOW</Button>
           </Summary>
         </Bottom>
       </Wrapper>

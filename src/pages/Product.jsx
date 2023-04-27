@@ -164,16 +164,22 @@ const Button = styled.button`
 const Product = () => {
   const location = useLocation();
   const id = location.pathname.split("/")[2];
-  const [product, setProduct] = useState({});
-  const [size, setSize] = useState(undefined);
-  const [color, setColor] = useState(undefined);
-  const [quantity, setQuantity] = useState(1);
-  const [clicked, setClicked] = useState(false);
-  const [errorSize, setErrorSize] = useState(false);
-  const [errorColor, setErrorColor] = useState(false);
   const userId = useSelector((state) => state.user.currentUser?._id);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [product, setProduct] = useState({});
+  const [color, setColor] = useState(undefined);
+  const [sizeDisplay, setSizeDisplay] = useState();
+  const [quantity, setQuantity] = useState(1);
+  const [variants, setVariants] = useState();
+  const [variant, setVariant] = useState({
+    color: "",
+    size: "",
+    stock: "",
+    id,
+  });
+  const [clicked, setClicked] = useState(false);
+  const [validate, setValidate] = useState(false);
 
   useEffect(() => {
     // dispatch(getProducts());
@@ -189,7 +195,36 @@ const Product = () => {
     getProductItem();
   }, [id]);
 
-  // console.log(product.imgDisplay.imgUrl);
+  const productVariant = product.variant;
+
+  useEffect(() => {
+    if (product?.variant) {
+      const variants = productVariant.reduce((acc, curr) => {
+        const variantExist = acc?.find((item) => item.color === curr.color);
+        if (variantExist) {
+          variantExist.size.push({
+            size: curr.size,
+            stock: curr.stock,
+            id: curr._id,
+          });
+        } else {
+          acc.push({
+            color: curr.color,
+            size: [
+              {
+                size: curr.size,
+                stock: curr.stock,
+                id: curr._id,
+              },
+            ],
+          });
+        }
+        return acc;
+      }, []);
+
+      setVariants(variants);
+    }
+  }, [product.variant, productVariant]);
 
   const handleQty = (type) => {
     if (type === "desc") {
@@ -198,6 +233,28 @@ const Product = () => {
       setQuantity(quantity + 1);
     }
   };
+
+  const handleColorChange = (e) => {
+    setVariant((prev) => ({ ...prev, color: e }));
+    setColor(e);
+    setClicked(false);
+  };
+
+  // console.log(variant);
+
+  const handleVariant = (e) => {
+    setVariant((prev) => ({
+      ...prev,
+      id: e.id,
+      size: e.size,
+      stock: e.stock,
+    }));
+  };
+
+  useEffect(() => {
+    const data = variants?.find((item) => item.color === color);
+    setSizeDisplay(data?.size);
+  }, [color, variants]);
 
   //
   const handleClick = (item) => {
@@ -219,17 +276,9 @@ const Product = () => {
     setClicked(newClicked);
   };
 
-  const validate = () => {
-    if (size === undefined) setErrorSize(true);
-    if (color === undefined) setErrorColor(true);
+  const rubValidate = () => {
+    setValidate(true);
   };
-
-  useEffect(() => {
-    if (size) setErrorSize(false);
-    if (color) setErrorColor(false);
-  }, [size, color]);
-
-  // console.log(productChart);
   const handleAddToChart = () => {
     // const inCart = cart.find(
     //   (cart) =>
@@ -237,18 +286,18 @@ const Product = () => {
     //     cart.color === products.color &&
     //     cart.size === products.size
     // );
-    if (!size || !color) {
-      validate();
+    if (!variant.color || !variant.size) {
+      rubValidate();
     } else if (userId) {
       const { desc, imgDetail, categories, ...productChart } = product;
       // const img = product.imgDisplay.imgUrl;
       const products = {
         ...productChart,
         imgDisplay: product.imgDisplay.imgUrl,
-        size,
-        color,
+        variant,
         quantity,
       };
+
       //ke api call untuk add cart di data base
       updatecart(userId, { products: products }, dispatch);
       //langsung ke cart redux untuk add cart di redux
@@ -273,7 +322,7 @@ const Product = () => {
             modules={[Pagination, Navigation]}
             className="mySwiper"
           >
-            {product.imgDetail?.map((item, i) => (
+            {product?.imgDetail?.map((item, i) => (
               <SwiperSlide key={i}>
                 <Sliders item={item.imgUrl} />
               </SwiperSlide>
@@ -284,37 +333,53 @@ const Product = () => {
           <Title>{product.title}</Title>
           <Desc>{product.desc}</Desc>
           <Price>{product.price}</Price>
+
           <FilterContainer>
             <Filter>
               <FilterTitle>Color</FilterTitle>
-              {product.color?.map((colors, i) => (
-                <FilterColor key={i} onClick={(e) => setColor(e.target.value)}>
-                  <FilterOptionColor>{colors}</FilterOptionColor>
-                </FilterColor>
-              ))}
+              <FilterColor onChange={(e) => handleColorChange(e.target.value)}>
+                <FilterOptionColor value="">Selected Color</FilterOptionColor>
+                {variants?.map((item, i) => (
+                  <FilterOptionColor key={i} value={item.color}>
+                    {item.color}
+                  </FilterOptionColor>
+                ))}
+              </FilterColor>
             </Filter>
-            {errorColor ? (
+            {!color && validate && (
               <span style={{ color: "red " }}>silahkan pilih warna</span>
-            ) : null}
+            )}
             <Filter>
               <FilterTitle>Size</FilterTitle>
-              {product.size?.map((item, i) => (
-                <FilterSize key={i} onClick={(e) => setSize(e.target.value)}>
-                  <FilterOptionSize
-                    // key={item}
-                    clicked={clicked[item]}
-                    onClick={() => handleClick(item)}
-                    value={item}
-                  >
-                    {item}
-                  </FilterOptionSize>
-                </FilterSize>
+              {sizeDisplay?.map((size, i) => (
+                <div style={{ display: "flex" }} key={i}>
+                  {/* {item.size.map((size, j) => ( */}
+                  <FilterSize key={i} onClick={() => handleVariant(size)}>
+                    <FilterOptionSize
+                      // key={item}
+                      clicked={clicked[size.size]}
+                      onClick={() => handleClick(size.size)}
+                      value={size.size}
+                    >
+                      {size.size}
+                    </FilterOptionSize>
+                  </FilterSize>
+                  {/* ))} */}
+                </div>
               ))}
             </Filter>
-            <Price>stock {product.stock}</Price>
-            {errorSize ? (
-              <span style={{ color: "red " }}>silahkan pilih ukuran</span>
-            ) : null}
+            {/* {variants?.map((item, i) =>
+              item?.size?.map((size) => <Price>stock {size.stock}</Price>)
+            )} */}
+            {variant.stock && (
+              <span style={{ color: variant.stock <= 1 ? "red " : "black" }}>
+                {" "}
+                sisa stock {variant.stock}
+              </span>
+            )}
+            {/* {!color && validate && (
+              <span style={{ color: "red " }}>silahkan pilih warna</span>
+            )} */}
           </FilterContainer>
           <AddContainer>
             <AmountContainer>

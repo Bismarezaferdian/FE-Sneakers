@@ -64,8 +64,8 @@ const cartSlice = createSlice({
           const inCart = state.products.find(
             (item) =>
               item._id === product._id &&
-              item.color === product.color &&
-              item.size === product.size
+              item.variant.color === product.variant.color &&
+              item.variant.size === product.variant.size
           );
           if (!inCart) {
             state.products.push(product);
@@ -78,8 +78,8 @@ const cartSlice = createSlice({
         const inCart = state.products.find(
           (item) =>
             item._id === payload.products._id &&
-            item.color === payload.products.color &&
-            item.size === payload.products.size
+            item.variant.color === payload.products.variant.color &&
+            item.variant.size === payload.products.variant.size
         );
         // If the payload is already in the cart, update its quantity
         if (inCart) {
@@ -103,8 +103,8 @@ const cartSlice = createSlice({
       const inCart = state.products.find(
         (item) =>
           item._id === payload._id &&
-          item.color === payload.color &&
-          item.size === payload.size
+          item.variant.color === payload.variant.color &&
+          item.variant.size === payload.variant.size
       );
       if (inCart) {
         inCart.quantity += 1;
@@ -122,8 +122,8 @@ const cartSlice = createSlice({
       const inCart = state.products.find(
         (item) =>
           item._id === payload._id &&
-          item.color === payload.color &&
-          item.size === payload.size
+          item.variant.color === payload.variant.color &&
+          item.variant.size === payload.variant.size
       );
       // if (inCart) inCart.quantity -= 1;
 
@@ -136,8 +136,8 @@ const cartSlice = createSlice({
           state.products.findIndex(
             (item) =>
               item._id === payload._id &&
-              item.color === payload.color &&
-              item.size === payload.size
+              item.variant.color === payload.variant.color &&
+              item.variant.size === payload.variant.size
           ),
           1
         );

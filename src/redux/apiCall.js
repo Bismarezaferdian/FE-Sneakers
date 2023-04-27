@@ -74,8 +74,7 @@ export const updatecart = async (userId, data, dispatch) => {
   // console.log(userId, data);
   dispatch(addCartStart());
   try {
-    const res = await fetchData.post(`/carts/${userId}`, data);
-    console.log(res);
+    await fetchData.post(`/carts/${userId}`, data);
   } catch (error) {
     dispatch(addCartFailure());
     console.log(error);
