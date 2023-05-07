@@ -1,6 +1,6 @@
 // import { Add, Remove } from "@material-ui/icons";
 import { Add, Remove } from "@mui/icons-material";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
@@ -188,7 +188,6 @@ const Cart = () => {
   // const userId = _id;
   // const userId = "";
   const dispatch = useDispatch();
-  console.log(cart);
 
   useEffect(() => {
     getCart(userId, dispatch);

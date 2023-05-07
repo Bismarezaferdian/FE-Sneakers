@@ -6,21 +6,20 @@ import {
 } from "@mui/icons-material";
 import {
   Collapse,
-  FormControlLabel,
-  IconButton,
+  FormControl,
+  InputLabel,
   List,
   ListItemButton,
   ListItemIcon,
-  ListItemText,
+  MenuItem,
   Radio,
-  RadioGroup,
-  TableBody,
-  TableCell,
-  TableRow,
+  Select,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Navbar from "../components/Navbar";
+import { useSelector } from "react-redux";
+import { fetchData } from "../useFetch";
 
 const Container = styled.div`
   /* background: gray; */
@@ -170,12 +169,72 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
+const FormWrapp = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+`;
+
 const Checkout = () => {
   const [open, setOpen] = useState({});
+  const cart = useSelector((state) => state?.cart);
+  const [province, setProvince] = useState([]);
+  const [city, setCity] = useState([]);
+  const [cost, setCost] = useState([]);
+  const [select, setSelect] = useState({
+    provinceId: "",
+    cityId: "",
+    courier: "",
+    costs: undefined,
+  });
 
   const handleToggle = (index) => {
     setOpen((prevOpen) => ({ ...prevOpen, [index]: !prevOpen[index] }));
   };
+
+  useEffect(() => {
+    const getProvince = async () => {
+      const res = await fetchData.get(`/cekOngkir/province`);
+      setProvince(res.data);
+    };
+    getProvince();
+  }, []);
+
+  useEffect(() => {
+    const getCity = async () => {
+      const res = await fetchData.get(`/cekOngkir/city/${select.provinceId}`);
+      setCity(res.data);
+    };
+    if (select.provinceId !== "") {
+      getCity();
+    }
+  }, [select.provinceId]);
+
+  useEffect(() => {
+    const getCost = async () => {
+      const res = await fetchData.post("/cekOngkir/cost", {
+        origin: "151",
+        destination: select.cityId,
+        weight: 1700,
+        courier: select.courier,
+      });
+      // const data = res.data;
+      setCost(res.data[0].costs);
+    };
+    if (select.cityId && select.courier !== "") {
+      getCost();
+    }
+  }, [select.cityId, select.courier]);
+
+  const handleSelect = (e) => {
+    setSelect((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+  // console.log(select.costs.cost?.length);
+  console.log(select.costs?.cost[0]);
 
   return (
     <div>
@@ -195,108 +254,135 @@ const Checkout = () => {
           </Wrapp>
           <ProductWrapp>
             <SubTitle>Product Detail</SubTitle>
-            <Content>
-              <ProductImg>
-                <Img
-                  src={
-                    "https://cdn.shopify.com/s/files/1/0259/7021/2909/products/AURORA_FD2596-600_PHSLH000-2000_1360x.jpg?v=1682138435"
-                  }
-                />
-              </ProductImg>
-              <DetailProduct>
-                <ProductTitle>
-                  <Span>Title:</Span>Nike Jordan 2{" "}
-                </ProductTitle>
+            {cart.products.map((item, index) => (
+              <Content key={index}>
+                <ProductImg>
+                  <Img src={item.imgDisplay} />
+                </ProductImg>
+                <DetailProduct>
+                  <ProductTitle>
+                    <Span>Title:</Span>
+                    {item.title}{" "}
+                  </ProductTitle>
 
-                <ProductId>
-                  {" "}
-                  <Span>Product Id:</Span>4324232402
-                </ProductId>
-                <ProductColor>
-                  <Span>Color:</Span>red
-                </ProductColor>
-                <ProductSize>
-                  <Span>Size:</Span>m
-                </ProductSize>
-                <ProductSize>
-                  <Span>Total:</Span>1
-                </ProductSize>
-                <ProductPrice>
-                  <Span>Price:</Span>rp 2.000.000
-                </ProductPrice>
-              </DetailProduct>
-            </Content>
+                  <ProductId>
+                    {" "}
+                    <Span>Product Id:</Span>
+                    {item.id}
+                  </ProductId>
+                  <ProductColor>
+                    <Span>Color:</Span>
+                    {item.variant.color}
+                  </ProductColor>
+                  <ProductSize>
+                    <Span>Size:</Span>
+                    {item.variant.size}
+                  </ProductSize>
+                  <ProductSize>
+                    <Span>Total:</Span>
+                    {item.quantity}
+                  </ProductSize>
+                  <ProductPrice>
+                    <Span>Price:</Span>rp {item.price}
+                  </ProductPrice>
+                </DetailProduct>
+              </Content>
+            ))}
           </ProductWrapp>
           <Wrapp>
-            <SubTitle> Courir info</SubTitle>
-            <RadioWrappContent>
-              <RadioWrapp>
-                <TextCourir> courir</TextCourir>
-
-                <Radio
-                  checked={(e) => e.target.value === "a"}
-                  //   onChange={handleChange}
-                  value="a"
-                  //   name="radio-buttons"
-                  inputProps={{ "aria-label": "A" }}
-                />
-                <Text>jne</Text>
-              </RadioWrapp>
-              <RadioWrapp>
-                <TextCourir> courir</TextCourir>
-                <Radio
-                  //   checked={selectedValue === 'a'}
-                  //   onChange={handleChange}
-                  value="a"
-                  //   name="radio-buttons"
-                  inputProps={{ "aria-label": "A" }}
-                />
-                <Text>j&t</Text>
-              </RadioWrapp>
-            </RadioWrappContent>
-            <RadioWrappContent>
-              <RadioWrapp>
-                <TextCourir> serice</TextCourir>
-
-                <Radio
-                  //   checked={selectedValue === 'a'}
-                  //   onChange={handleChange}
-                  value="a"
-                  //   name="radio-buttons"
-                  inputProps={{ "aria-label": "A" }}
-                />
-                <Text>regular</Text>
-              </RadioWrapp>
-              <RadioWrapp>
-                <TextCourir> service</TextCourir>
-                <Radio
-                  //   checked={selectedValue === 'a'}
-                  //   onChange={handleChange}
-                  value="a"
-                  //   name="radio-buttons"
-                  inputProps={{ "aria-label": "A" }}
-                />
-                <Text>yes</Text>
-              </RadioWrapp>
-            </RadioWrappContent>
-            <Courir>
-              <Span>Courir</Span>Jne
-            </Courir>
-            <Service>
-              <Span>Service</Span>Regular
-            </Service>
-            <Weight>
-              <Span>Weight</Span>1 kg
-            </Weight>
+            <SubTitle> Shipping</SubTitle>
+            <FormWrapp>
+              {/* <Span>Provinsi</Span> */}
+              <FormControl sx={{ width: "300px" }}>
+                <InputLabel id="demo-simple-select-label">Province</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={select.provinceId || ""}
+                  onChange={handleSelect}
+                  label="Province"
+                  name="provinceId"
+                  // onChange={handleChange}
+                >
+                  {province?.map((item, index) => (
+                    <MenuItem value={item.province_id} key={index}>
+                      {item.province}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </FormWrapp>
+            <FormWrapp>
+              {/* <Span> Kota</Span> */}
+              <FormControl sx={{ width: "300px" }}>
+                <InputLabel id="demo-simple-select-label">City</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={select.cityId || ""}
+                  label="City"
+                  onChange={handleSelect}
+                  name="cityId"
+                >
+                  {city.map((item, index) => (
+                    <MenuItem value={item.city_id} key={index}>
+                      {item.city_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </FormWrapp>
+            <FormWrapp>
+              {/* <Span> Kurir</Span> */}
+              <FormControl sx={{ width: "300px" }}>
+                <InputLabel id="demo-simple-select-label">Courir </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={select.courier || ""}
+                  label="Courier"
+                  name="courier"
+                  onChange={handleSelect}
+                >
+                  <MenuItem value="jne">JNE</MenuItem>
+                  <MenuItem value="pos">POS indonesia</MenuItem>
+                  <MenuItem value="tiki">TIKI</MenuItem>
+                </Select>
+              </FormControl>
+            </FormWrapp>
+            <FormWrapp>
+              {/* <Span> Service</Span> */}
+              <FormControl sx={{ width: "300px" }}>
+                <InputLabel id="demo-simple-select-label">Service</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  // value={select.costs || " "}
+                  defaultValue=""
+                  label="Service"
+                  onChange={handleSelect}
+                  name="costs"
+                >
+                  {cost.map((item, index) => (
+                    <MenuItem value={item} key={index}>
+                      {item.service}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </FormWrapp>
             <CourirPrice>
-              <Span>Price</Span>rp. 9.0000
+              <Text>
+                {" "}
+                <Span>Ongkos Kirim : </Span> Rp.{select.costs?.cost[0]?.value}
+              </Text>
             </CourirPrice>
+            <Span>Estimasi day {select.costs?.cost[0]?.etd} days</Span>
           </Wrapp>
           <PaymentInfo>
             <SubTitle>Metode Payment</SubTitle>
             <PaymentWrapp>
               <ListItemButton onClick={() => handleToggle(1)}>
-                {/* <ListItemIcon>inbox</ListItemIcon> */}
                 <img
                   style={{ width: "140px" }}
                   src={
@@ -304,7 +390,6 @@ const Checkout = () => {
                   }
                   alt=""
                 />
-                {/* <ListItemText primary="BCA" /> */}
                 {open[1] ? <ExpandLess /> : <ExpandMore />}
               </ListItemButton>
               <Collapse in={open[1]} timeout="auto" unmountOnExit>
@@ -318,14 +403,12 @@ const Checkout = () => {
                         <ContentCopy />
                       </BankInfo>
                     </ListItemIcon>
-                    {/* <ListItemText primary="A/N Bisma Reza Ferdian - 323234345454" /> */}
                   </ListItemButton>
                 </List>
               </Collapse>
             </PaymentWrapp>
             <PaymentWrapp>
               <ListItemButton onClick={() => handleToggle(2)}>
-                {/* <ListItemIcon>inbox</ListItemIcon> */}
                 <img
                   style={{ width: "140px" }}
                   src={
@@ -333,7 +416,6 @@ const Checkout = () => {
                   }
                   alt=""
                 />
-                {/* <ListItemText primary="BRI" /> */}
                 {open[2] ? <ExpandLess /> : <ExpandMore />}
               </ListItemButton>
               <Collapse in={open[2]} timeout="auto" unmountOnExit>
@@ -357,14 +439,22 @@ const Checkout = () => {
             <AmountContent>
               <AmountText>
                 {" "}
-                <Span>Subtotal untuk Product:</Span>Rp 1.400.000
+                <Span>Subtotal untuk Product:</Span>Rp {cart.total}
               </AmountText>
               <AmountText>
-                {" "}
-                <Span>Total ongkos kirim:</Span>Rp.9.000
+                <Text>
+                  {" "}
+                  <Span>Total Ongkos Kirim : </Span> Rp.
+                  {select.costs?.cost[0]?.value}
+                </Text>{" "}
               </AmountText>
               <AmountText>
-                <Span>Total pembayaran:</Span>Rp. 1.490.000
+                <Text>
+                  <Span>Total pembayaran:</Span>Rp.
+                  {select.costs && cart.total
+                    ? cart.total + select.costs?.cost[0]?.value
+                    : ""}
+                </Text>
               </AmountText>
 
               <Button>Buat Pesanan</Button>
