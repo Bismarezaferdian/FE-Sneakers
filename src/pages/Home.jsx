@@ -11,6 +11,7 @@ import Vidios from "../components/Vidios";
 import Banner from "./Banner";
 import NewArrival from "./NewArrival";
 import RellsProducts from "./RellsProducts";
+import { ToastContainer } from "react-toastify";
 // import NewArrivalShoes from "./RellsProducts";
 
 export const Countainer = styled.div`
@@ -36,6 +37,7 @@ export const Title = styled.p`
 const Home = () => {
   return (
     <>
+      <ToastContainer />
       <Announcement />
       <Navbar />
       <Banner />

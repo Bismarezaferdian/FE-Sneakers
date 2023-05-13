@@ -2,6 +2,7 @@ import React from "react";
 // import ReactDOM from "react-dom";
 import * as ReactDOM from "react-dom/client";
 import App from "./App";
+import "react-toastify/dist/ReactToastify.css";
 // import "swiper/css/bundle";
 // import "swiper/css";
 // import "swiper/css/pagination";

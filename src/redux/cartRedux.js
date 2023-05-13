@@ -38,10 +38,12 @@ import { revertAll } from "./action";
 // export default cartSlice.reducer;
 
 const initialState = {
+  _id: null,
   userId: null,
   products: [],
   qty: 0,
   total: 0,
+  weight: 0,
   error: false,
   isFetch: false,
 };
@@ -59,6 +61,7 @@ const cartSlice = createSlice({
     addToCart: (state, { payload }) => {
       state.isFetch = false;
       state.error = false;
+      //cek apakah payload.products sebuah array
       if (payload.products instanceof Array) {
         payload.products.forEach((product) => {
           const inCart = state.products.find(
@@ -71,6 +74,7 @@ const cartSlice = createSlice({
             state.products.push(product);
             state.qty += 1;
             state.total += product.quantity * product.price;
+            state.weight += product.weight;
           }
         });
       } else {
@@ -85,14 +89,17 @@ const cartSlice = createSlice({
         if (inCart) {
           inCart.quantity += payload.products.quantity;
           state.total += inCart.quantity * inCart.price;
+          state.weight += inCart.weight;
         } else {
           // If the payload is not in the cart, add it
           state.products.push(payload.products);
           state.qty += 1;
           state.total += payload.products.quantity * payload.products.price;
+          state.weight += payload.products.weight;
         }
       }
 
+      state._id = payload._id;
       state.userId = payload.userId;
     },
 
@@ -109,6 +116,7 @@ const cartSlice = createSlice({
       if (inCart) {
         inCart.quantity += 1;
         state.total += inCart.price;
+        state.weight += inCart.weight;
       }
     },
 
@@ -130,6 +138,7 @@ const cartSlice = createSlice({
       if (inCart && inCart.quantity > 1) {
         inCart.quantity -= 1;
         state.total -= inCart.price;
+        state.weight -= inCart.weight;
       } else if (inCart && inCart.quantity === 1) {
         state.products.splice(
           // state.products.indexOf(
@@ -143,8 +152,10 @@ const cartSlice = createSlice({
         );
         state.total -= inCart.price;
         state.qty -= 1;
+        state.weight -= inCart.weight;
       }
     },
+    resetState: () => initialState,
   },
 });
 
@@ -155,5 +166,6 @@ export const {
   removeChart,
   addCartStart,
   addCartFailure,
+  resetState,
 } = cartSlice.actions;
 export default cartSlice.reducer;

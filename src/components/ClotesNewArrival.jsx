@@ -4,6 +4,7 @@ import { Skeleton } from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { formatRupiah } from "../utils/formatRupiah";
 
 const Info = styled.div`
   opacity: 0;
@@ -98,7 +99,7 @@ function ClotesNewArrival({ loading, item }) {
           <Container>
             <Image src={item.imgDisplay.imgUrl} />
             <Title>{item.title}</Title>
-            <Price>{item.price}</Price>
+            <Price>{formatRupiah(item.price)}</Price>
             <Info>
               <Icon>
                 <SearchOutlined />

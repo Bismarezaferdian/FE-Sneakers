@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Skeleton } from "@mui/material";
 import { SearchOutlined } from "@mui/icons-material";
+import { formatRupiah } from "../utils/formatRupiah";
 // import { Skeleton } from "@material-ui/";
 
 const Info = styled.div`
@@ -98,7 +99,7 @@ function ProductNewArrival({ loading, item }) {
           <Container>
             <Image src={item.imgDisplay.imgUrl} />
             <Title>{item.title}</Title>
-            <Price>{item.price}</Price>
+            <Price>{formatRupiah(item.price)}</Price>
             <Info>
               <Icon>
                 <SearchOutlined />

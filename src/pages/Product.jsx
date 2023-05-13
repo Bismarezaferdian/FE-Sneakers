@@ -16,6 +16,8 @@ import { fetchData } from "../useFetch";
 import Sliders from "../components/Slider";
 import { updatecart } from "../redux/apiCall";
 import { Add, Remove } from "@mui/icons-material";
+import { errorMessage } from "../utils/Toastify";
+import { ToastContainer } from "react-toastify";
 
 const Container = styled.div``;
 
@@ -176,7 +178,7 @@ const Product = () => {
     color: "",
     size: "",
     stock: "",
-    id,
+    id: "",
   });
   const [clicked, setClicked] = useState(false);
   const [validate, setValidate] = useState(false);
@@ -279,6 +281,7 @@ const Product = () => {
   const rubValidate = () => {
     setValidate(true);
   };
+
   const handleAddToChart = () => {
     // const inCart = cart.find(
     //   (cart) =>
@@ -288,6 +291,8 @@ const Product = () => {
     // );
     if (!variant.color || !variant.size) {
       rubValidate();
+    } else if (variant.stock <= 0) {
+      errorMessage("product sudah habis !");
     } else if (userId) {
       const { desc, imgDetail, categories, ...productChart } = product;
       // const img = product.imgDisplay.imgUrl;
@@ -308,8 +313,15 @@ const Product = () => {
     }
   };
 
+  const toLocaleString = (time) =>
+    new Date(time).toLocaleString("en-US", {
+      timeZone: "Asia/Jakarta",
+      dateStyle: "long",
+    });
+
   return (
     <Container>
+      <ToastContainer />
       <Navbar />
       <Announcement />
       <Wrapper>
@@ -331,6 +343,7 @@ const Product = () => {
         </ImgContainer>
         <InfoContainer>
           <Title>{product.title}</Title>
+          <Title>{toLocaleString(product.createdAt)}</Title>
           <Desc>{product.desc}</Desc>
           <Price>{product.price}</Price>
 

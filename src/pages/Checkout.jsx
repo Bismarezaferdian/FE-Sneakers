@@ -18,8 +18,11 @@ import {
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Navbar from "../components/Navbar";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchData } from "../useFetch";
+import { formatRupiah } from "../utils/formatRupiah";
+import { AddOrder, deleteCart } from "../redux/apiCall";
+import { resetCart, resetState } from "../redux/cartRedux";
 
 const Container = styled.div`
   /* background: gray; */
@@ -179,6 +182,7 @@ const FormWrapp = styled.div`
 const Checkout = () => {
   const [open, setOpen] = useState({});
   const cart = useSelector((state) => state?.cart);
+  const { currentUser } = useSelector((state) => state?.user);
   const [province, setProvince] = useState([]);
   const [city, setCity] = useState([]);
   const [cost, setCost] = useState([]);
@@ -188,6 +192,11 @@ const Checkout = () => {
     courier: "",
     costs: undefined,
   });
+  const [validation, setValidation] = useState(false);
+  const dispatch = useDispatch();
+
+  const pajak = cart.total * 0.11;
+  const subTotal = cart?.total + pajak + select.costs?.cost[0]?.value;
 
   const handleToggle = (index) => {
     setOpen((prevOpen) => ({ ...prevOpen, [index]: !prevOpen[index] }));
@@ -216,7 +225,7 @@ const Checkout = () => {
       const res = await fetchData.post("/cekOngkir/cost", {
         origin: "151",
         destination: select.cityId,
-        weight: 1700,
+        weight: cart.weight,
         courier: select.courier,
       });
       // const data = res.data;
@@ -225,7 +234,7 @@ const Checkout = () => {
     if (select.cityId && select.courier !== "") {
       getCost();
     }
-  }, [select.cityId, select.courier]);
+  }, [select.cityId, select.courier, cart.weight]);
 
   const handleSelect = (e) => {
     setSelect((prev) => ({
@@ -233,8 +242,36 @@ const Checkout = () => {
       [e.target.name]: e.target.value,
     }));
   };
-  // console.log(select.costs.cost?.length);
-  console.log(select.costs?.cost[0]);
+
+  const runValidation = () => {
+    setValidation(!validation);
+  };
+
+  console.log(select?.costs);
+
+  const handleSubmit = () => {
+    if (!cart.products || !select.costs || !select.costs.service) {
+      runValidation();
+    }
+
+    const data = {
+      userId: cart.userId,
+      products: cart.products,
+      pengiriman: {
+        jasaKirim: select.courier,
+        service: select.costs.service,
+        Weight: cart.weight,
+      },
+      pajak: pajak,
+      status: "pending",
+      total: subTotal,
+      address: currentUser.address,
+    };
+
+    deleteCart(cart._id);
+    dispatch(resetState());
+    AddOrder(data);
+  };
 
   return (
     <div>
@@ -246,10 +283,11 @@ const Checkout = () => {
             <SubTitle>Address</SubTitle>
             <Name>Bisma Reza Ferdian</Name>
             <Address>
-              Jl. Raya Kby. Lama No.22, RT.4/RW.3, Grogol Utara, Kec. Kby. Lama,
+              {/* Jl. Raya Kby. Lama No.22, RT.4/RW.3, Grogol Utara, Kec. Kby. Lama,
               Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 11540
               (Belakang soto ragil), KOTA JAKARTA SELATAN - KEBAYORAN LAMA, DKI
-              JAKARTA, ID 12210
+              JAKARTA, ID 12210 */}
+              {currentUser.address}
             </Address>
           </Wrapp>
           <ProductWrapp>
@@ -268,7 +306,7 @@ const Checkout = () => {
                   <ProductId>
                     {" "}
                     <Span>Product Id:</Span>
-                    {item.id}
+                    {item.variant.id}
                   </ProductId>
                   <ProductColor>
                     <Span>Color:</Span>
@@ -283,18 +321,19 @@ const Checkout = () => {
                     {item.quantity}
                   </ProductSize>
                   <ProductPrice>
-                    <Span>Price:</Span>rp {item.price}
+                    <Span>Price:</Span>
+                    {formatRupiah(item.price)}
                   </ProductPrice>
                 </DetailProduct>
               </Content>
             ))}
           </ProductWrapp>
           <Wrapp>
-            <SubTitle> Shipping</SubTitle>
+            <SubTitle> Pengiriman</SubTitle>
             <FormWrapp>
               {/* <Span>Provinsi</Span> */}
               <FormControl sx={{ width: "300px" }}>
-                <InputLabel id="demo-simple-select-label">Province</InputLabel>
+                <InputLabel id="demo-simple-select-label">Provinsi</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
@@ -315,7 +354,7 @@ const Checkout = () => {
             <FormWrapp>
               {/* <Span> Kota</Span> */}
               <FormControl sx={{ width: "300px" }}>
-                <InputLabel id="demo-simple-select-label">City</InputLabel>
+                <InputLabel id="demo-simple-select-label">Kota</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
@@ -335,7 +374,9 @@ const Checkout = () => {
             <FormWrapp>
               {/* <Span> Kurir</Span> */}
               <FormControl sx={{ width: "300px" }}>
-                <InputLabel id="demo-simple-select-label">Courir </InputLabel>
+                <InputLabel id="demo-simple-select-label">
+                  Jasa Kirim{" "}
+                </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
@@ -353,7 +394,7 @@ const Checkout = () => {
             <FormWrapp>
               {/* <Span> Service</Span> */}
               <FormControl sx={{ width: "300px" }}>
-                <InputLabel id="demo-simple-select-label">Service</InputLabel>
+                <InputLabel id="demo-simple-select-label">Layanan</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
@@ -374,7 +415,12 @@ const Checkout = () => {
             <CourirPrice>
               <Text>
                 {" "}
-                <Span>Ongkos Kirim : </Span> Rp.{select.costs?.cost[0]?.value}
+                <Span>Total Berat : </Span> {cart.weight} g
+              </Text>
+              <Text>
+                {" "}
+                <Span>Ongkos Kirim : </Span>{" "}
+                {formatRupiah(select.costs?.cost[0]?.value)}
               </Text>
             </CourirPrice>
             <Span>Estimasi day {select.costs?.cost[0]?.etd} days</Span>
@@ -439,25 +485,27 @@ const Checkout = () => {
             <AmountContent>
               <AmountText>
                 {" "}
-                <Span>Subtotal untuk Product:</Span>Rp {cart.total}
+                <Span>Subtotal untuk Product:</Span>
+                {formatRupiah(cart.total)}
               </AmountText>
               <AmountText>
                 <Text>
                   {" "}
                   <Span>Total Ongkos Kirim : </Span> Rp.
-                  {select.costs?.cost[0]?.value}
+                  {formatRupiah(select.costs?.cost[0]?.value)}
                 </Text>{" "}
               </AmountText>
               <AmountText>
                 <Text>
                   <Span>Total pembayaran:</Span>Rp.
                   {select.costs && cart.total
-                    ? cart.total + select.costs?.cost[0]?.value
+                    ? // ? formatRupiah(cart.total + select.costs?.cost[0]?.value)
+                      formatRupiah(subTotal)
                     : ""}
                 </Text>
               </AmountText>
 
-              <Button>Buat Pesanan</Button>
+              <Button onClick={handleSubmit}>Buat Pesanan</Button>
             </AmountContent>
           </AmountWrapp>
         </ContentWrapp>

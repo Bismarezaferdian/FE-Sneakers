@@ -9,7 +9,10 @@ import Navbar from "../components/Navbar";
 import { deleteProductCart, getCart, updatecart } from "../redux/apiCall";
 import { addQty, removeQty } from "../redux/cartRedux";
 import { mobile } from "../responsive";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { formatRupiah } from "../utils/formatRupiah";
+import { ToastContainer } from "react-toastify";
+import { errorMessage } from "../utils/Toastify";
 var debounce = require("lodash.debounce");
 
 const Container = styled.div``;
@@ -165,7 +168,7 @@ const SummaryItemPrice = styled.span`
   opacity: 0.8;
 `;
 
-const Button = styled(Link)`
+const Button = styled.button`
   width: 100%;
   /* padding: 10px; */
   background-color: #3330e4;
@@ -187,6 +190,7 @@ const Cart = () => {
   const userId = useSelector((state) => state.user.currentUser?._id);
   // const userId = _id;
   // const userId = "";
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -231,8 +235,23 @@ const Cart = () => {
     // }
   };
 
+  // notyfy();
+  console.log(cart);
+  const handleCheckout = () => {
+    if (cart.products.length > 0) {
+      navigate("/checkout");
+    } else {
+      errorMessage("Tidak ada barang !");
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+    }
+  };
+  console.log(cart);
+
   return (
     <Container>
+      <ToastContainer />
       <Navbar />
       <Announcement />
       <Wrapper>
@@ -266,6 +285,9 @@ const Cart = () => {
                     <ProductSize>
                       <p>sisa stock:{item.variant.stock}</p>
                     </ProductSize>
+                    <ProductSize>
+                      <p>berat:{item.weight}</p>
+                    </ProductSize>
                   </Details>
                 </ProductDetail>
                 <PriceDetail>
@@ -285,7 +307,7 @@ const Cart = () => {
                       {item.quantity === 1 ? "delete" : <Remove />}
                     </Btn>
                   </ProductAmountContainer>
-                  <ProductPrice>{item.price}</ProductPrice>
+                  <ProductPrice>{formatRupiah(item.price)}</ProductPrice>
                 </PriceDetail>
               </Product>
             ))}
@@ -295,22 +317,18 @@ const Cart = () => {
           <Summary>
             <SummaryTitle>ORDER SUMMARY</SummaryTitle>
             <SummaryItem>
-              <SummaryItemText>Subtotal</SummaryItemText>
-              <SummaryItemPrice>$ 80</SummaryItemPrice>
+              <SummaryItemText>Total Discount</SummaryItemText>
+              <SummaryItemPrice>Rp. 0</SummaryItemPrice>
             </SummaryItem>
             <SummaryItem>
-              <SummaryItemText>Estimated Shipping</SummaryItemText>
-              <SummaryItemPrice>$ 5.90</SummaryItemPrice>
-            </SummaryItem>
-            <SummaryItem>
-              <SummaryItemText>Shipping Discount</SummaryItemText>
-              <SummaryItemPrice>$ -5.90</SummaryItemPrice>
+              <SummaryItemText>Total Berat Product</SummaryItemText>
+              <SummaryItemPrice>{cart.weight} g</SummaryItemPrice>
             </SummaryItem>
             <SummaryItem type="total">
               <SummaryItemText>Total</SummaryItemText>
-              <SummaryItemPrice>Rp.{cart?.total}</SummaryItemPrice>
+              <SummaryItemPrice>{formatRupiah(cart?.total)}</SummaryItemPrice>
             </SummaryItem>
-            <Button to={"/checkout"}>CHECKOUT NOW</Button>
+            <Button onClick={handleCheckout}>CHECKOUT NOW</Button>
           </Summary>
         </Bottom>
       </Wrapper>
