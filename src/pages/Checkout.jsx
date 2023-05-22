@@ -23,6 +23,8 @@ import { fetchData } from "../useFetch";
 import { formatRupiah } from "../utils/formatRupiah";
 import { AddOrder, deleteCart } from "../redux/apiCall";
 import { resetCart, resetState } from "../redux/cartRedux";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   /* background: gray; */
@@ -180,6 +182,7 @@ const FormWrapp = styled.div`
 `;
 
 const Checkout = () => {
+  const navigate = useNavigate();
   const [open, setOpen] = useState({});
   const cart = useSelector((state) => state?.cart);
   const { currentUser } = useSelector((state) => state?.user);
@@ -249,28 +252,51 @@ const Checkout = () => {
 
   console.log(select?.costs);
 
-  const handleSubmit = () => {
-    if (!cart.products || !select.costs || !select.costs.service) {
-      runValidation();
-    }
+  const handleSubmit = async () => {
+    // if (!cart.products || !select.costs || !select.costs.service) {
+    //   runValidation();
+    // }
 
-    const data = {
-      userId: cart.userId,
-      products: cart.products,
-      pengiriman: {
-        jasaKirim: select.courier,
-        service: select.costs.service,
-        Weight: cart.weight,
+    // const data = {
+    //   userId: cart.userId,
+    //   products: cart.products,
+    //   pengiriman: {
+    //     jasaKirim: select.courier,
+    //     service: select.costs.service,
+    //     Weight: cart.weight,
+    //   },
+    //   pajak: pajak,
+    //   status: "pending",
+    //   total: subTotal,
+    //   address: currentUser.address,
+    // };
+
+    // deleteCart(cart._id);
+    // dispatch(resetState());
+    // AddOrder(data);
+
+    const dataMidtrans = {
+      transaction_details: {
+        order_id: "testnnnns12456784",
+        gross_amount: " 10000",
       },
-      pajak: pajak,
-      status: "pending",
-      total: subTotal,
-      address: currentUser.address,
+
+      customer_details: {
+        first_name: "Johny",
+        last_name: "Kane",
+        email: "testmidtrans@mailnesia.com",
+        phone: "08111222333",
+      },
     };
 
-    deleteCart(cart._id);
-    dispatch(resetState());
-    AddOrder(data);
+    const res = await fetchData.post("/midtrans/transaction", dataMidtrans);
+    window.location.assign(res.data.redirect_url);
+    // snap.pay('YOUR_SNAP_TOKEN', {
+    //   onSuccess: function(result){console.log('success');console.log(result);},
+    //   onPending: function(result){console.log('pending');console.log(result);},
+    //   onError: function(result){console.log('error');console.log(result);},
+    //   onClose: function(){console.log('customer closed the popup without finishing the payment');}
+    // })
   };
 
   return (
