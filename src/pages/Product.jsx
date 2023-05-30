@@ -9,7 +9,6 @@ import Navbar from "../components/Navbar";
 import Newsletter from "../components/Newsletter";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from "swiper";
-
 import { addToCart } from "../redux/cartRedux";
 import { mobile } from "../responsive";
 import { fetchData } from "../useFetch";
@@ -241,8 +240,6 @@ const Product = () => {
     setColor(e);
     setClicked(false);
   };
-
-  // console.log(variant);
 
   const handleVariant = (e) => {
     setVariant((prev) => ({

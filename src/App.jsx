@@ -8,6 +8,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import NewArrival from "./pages/RellsProducts";
 import Checkout from "./pages/Checkout";
+import Order from "./pages/Order";
 
 const App = () => {
   const user = useSelector((state) => state.user.currentUser);
@@ -25,6 +26,7 @@ const App = () => {
         <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/Order" element={<Order />} />
       </Routes>
     </div>
   );

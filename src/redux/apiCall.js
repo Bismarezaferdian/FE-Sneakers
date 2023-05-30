@@ -7,7 +7,6 @@ import {
 } from "./categoriesRedux";
 import {
   getProductFailure,
-  getProductFilter,
   getProductStart,
   getProductSucces,
 } from "./productRedux";
@@ -41,8 +40,10 @@ export const getProducts = async (dispatch, cat) => {
     const res = await fetchData.get(
       cat ? `/products?categories=${cat}` : "/products/"
     );
+
     if (res.data.length <= 0) alert("product tidak ada");
-    dispatch(cat ? getProductFilter(res.data) : getProductSucces(res.data));
+    dispatch(getProductSucces(res.data));
+    // dispatch(cat ? getProductFilter(res.data) : getProductSucces(res.data));
   } catch (error) {
     dispatch(getProductFailure());
   }
@@ -98,7 +99,8 @@ export const deleteCart = async (id) => {
 
 export const AddOrder = async (data) => {
   try {
-    await fetchData.post(`/orders`, data);
+    const datas = await fetchData.post(`/orders`, data);
+    console.log(datas);
   } catch (error) {
     console.log(error);
   }

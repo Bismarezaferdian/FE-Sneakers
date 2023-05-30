@@ -1,8 +1,4 @@
-import {
-  FavoriteBorderOutlined,
-  SearchOutlined,
-  ShoppingCartOutlined,
-} from "@mui/icons-material";
+import { SearchOutlined } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { formatRupiah } from "../utils/formatRupiah";
@@ -94,15 +90,9 @@ const Product = ({ item }) => {
       <Price>{formatRupiah(item.price)}</Price>
       <Info>
         <Icon>
-          <ShoppingCartOutlined />
-        </Icon>
-        <Icon>
           <Link to={`/product/${item._id}`}>
             <SearchOutlined />
           </Link>
-        </Icon>
-        <Icon>
-          <FavoriteBorderOutlined />
         </Icon>
       </Info>
     </Container>

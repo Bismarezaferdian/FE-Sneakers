@@ -26,12 +26,9 @@ export const SlideWrapp = styled.div`
 `;
 
 const NewArrival = () => {
-  // const allProduct = useSelector((state) => state.product);
-  // console.log(allProduct);
   const [shoes, setShoes] = useState([]);
   const [clotes, setClotes] = useState([]);
   const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState(null);
 
   useEffect(() => {
     const getProductWithCat = async () => {

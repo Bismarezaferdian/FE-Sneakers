@@ -5,14 +5,11 @@ import Categories from "../components/Categories";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import Newsletter from "../components/Newsletter";
-// import Products from "../components/Products";
-// import Slider from "../components/Slider";
 import Vidios from "../components/Vidios";
 import Banner from "./Banner";
 import NewArrival from "./NewArrival";
 import RellsProducts from "./RellsProducts";
 import { ToastContainer } from "react-toastify";
-// import NewArrivalShoes from "./RellsProducts";
 
 export const Countainer = styled.div`
   display: flex;

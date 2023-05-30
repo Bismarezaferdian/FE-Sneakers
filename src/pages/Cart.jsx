@@ -1,6 +1,6 @@
 // import { Add, Remove } from "@material-ui/icons";
 import { Add, Remove } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
@@ -9,7 +9,7 @@ import Navbar from "../components/Navbar";
 import { deleteProductCart, getCart, updatecart } from "../redux/apiCall";
 import { addQty, removeQty } from "../redux/cartRedux";
 import { mobile } from "../responsive";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { formatRupiah } from "../utils/formatRupiah";
 import { ToastContainer } from "react-toastify";
 import { errorMessage } from "../utils/Toastify";
@@ -186,10 +186,8 @@ const Button = styled.button`
 
 const Cart = () => {
   const cart = useSelector((state) => state?.cart);
-  const { error, isFetch } = useSelector((state) => state?.cart);
+  const { isFetch } = useSelector((state) => state?.cart);
   const userId = useSelector((state) => state.user.currentUser?._id);
-  // const userId = _id;
-  // const userId = "";
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -218,25 +216,9 @@ const Cart = () => {
 
   const handleQty = async (item, action) => {
     debouncedHandleQty(item, action);
-    // if (action === "plus") {
-    //   await updatecart(
-    //     userId,
-    //     {
-    //       products: item,
-    //     },
-    //     dispatch
-    //   );
-    //   dispatch(addQty(item));
-    // } else if (action === "minus") {
-    //   await deleteProductCart(userId, {
-    //     products: item,
-    //   });
-    //   dispatch(removeQty(item));
-    // }
   };
 
   // notyfy();
-  console.log(cart);
   const handleCheckout = () => {
     if (cart.products.length > 0) {
       navigate("/checkout");
@@ -247,7 +229,6 @@ const Cart = () => {
       }, 2000);
     }
   };
-  console.log(cart);
 
   return (
     <Container>

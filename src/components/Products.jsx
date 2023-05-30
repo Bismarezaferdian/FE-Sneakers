@@ -13,24 +13,29 @@ const Container = styled.div`
 `;
 
 const Products = ({ cat, filters, sort }) => {
-  //menerima state kiriman dari input searc from navbar and search from category
-  // const {state}= useLocation()
-  // const {productFilters}= state
-
   const products = useLocation();
+  const location = useLocation();
   // const state = products.state.productFilters;
+  //product filter yang di ambil dari kolom search
   const state = products.state?.productFilters;
-  const [productFilters, setProductFilters] = useState(state);
+  const [productFilter, setProductFilter] = useState();
   const allProduct = useSelector((state) => state.product.products);
+  //product filter yang di ambil dari filter pathname / navlink
   const [product, setProduct] = useState(allProduct);
   const dispatch = useDispatch();
+  const id = location.pathname?.split("/")[2];
+  useEffect(() => {
+    getProducts(dispatch, id);
+    // getProducts(dispatch);
+  }, [dispatch, id]);
 
   useEffect(() => {
-    getProducts(dispatch);
-  }, [dispatch]);
+    // getProducts(dispatch, id);
+    setProduct(allProduct);
+  }, [allProduct, dispatch, id]);
 
   useEffect(() => {
-    setProductFilters(state);
+    setProductFilter(state);
   }, [state]);
 
   // useEffect(() => {
@@ -47,19 +52,15 @@ const Products = ({ cat, filters, sort }) => {
   useEffect(() => {
     if (state) {
       if (sort === "newest") {
-        setProductFilters((prev) =>
+        setProductFilter((prev) =>
           [...prev].sort(
             (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
           )
         );
       } else if (sort === "asc") {
-        setProductFilters((prev) =>
-          [...prev].sort((a, b) => a.price - b.price)
-        );
+        setProductFilter((prev) => [...prev].sort((a, b) => a.price - b.price));
       } else {
-        setProductFilters((prev) =>
-          [...prev].sort((a, b) => b.price - a.price)
-        );
+        setProductFilter((prev) => [...prev].sort((a, b) => b.price - a.price));
       }
     } else if (allProduct) {
       if (sort === "newest") {
@@ -76,14 +77,10 @@ const Products = ({ cat, filters, sort }) => {
     }
   }, [sort, state, allProduct]);
 
-  // useEffect(() => {
-  //   productFilters ? setProduct(productFilters) : setProduct(allProduct);
-  // }, [productFilters, state, allProduct]);
-
   return (
     <Container>
-      {productFilters?.length > 0
-        ? productFilters?.map((item) => <Product item={item} key={item._id} />)
+      {productFilter?.length > 0
+        ? productFilter?.map((item) => <Product item={item} key={item._id} />)
         : product?.map((item) => <Product item={item} key={item._id} />)}
       {/* popularProduct di ganti dengan  product */}
     </Container>

@@ -6,16 +6,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-// import {
-//   Avatar,
-//   Box,
-//   Divider,
-//   Icon,
-//   IconButton,
-//   ListItemIcon,
-//   Menu,
-//   Tooltip,
-// } from "@mui/material";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -28,15 +18,22 @@ import { logout } from "../redux/userRedux";
 import {
   AccountCircleRounded,
   ArrowRight,
+  Assessment,
+  AssessmentSharp,
+  AssignmentInd,
+  AssignmentTurnedIn,
+  AssignmentTurnedInOutlined,
+  Receipt,
   Search,
   ShoppingCartOutlined,
 } from "@mui/icons-material";
+import AssignmentIcon from "@mui/icons-material/Assignment";
 import { Badge } from "@mui/material";
 
 const Container = styled.nav`
   position: sticky;
   top: 0;
-  z-index: 999;
+  z-index: 900;
   /* height: 80px; */
   background: #3330e4;
   display: flex;
@@ -49,13 +46,51 @@ const Wrapper = styled.div`
   padding: 0 20px;
   display: flex;
   width: 100%;
-  overflow: hidden;
+  /* overflow: hidden; */
   ${mobile({ padding: "10px 0px" })}/* align-items: center; */
   /* justify-content: space-between; */
 `;
 
 const ShoppingCart = styled(ShoppingCartOutlined)`
   color: #ffff;
+`;
+
+const TxtOrder = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  padding: 4px;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #f9f9f9;
+  white-space: nowrap;
+  visibility: hidden;
+  opacity: 0;
+  z-index: 999;
+  transition: visibility 0s, opacity 0.3s linear;
+`;
+
+const Order = styled(Receipt)`
+  color: #ffff;
+`;
+
+const TxtCart = styled.span`
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  padding: 4px;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #f9f9f9;
+  white-space: nowrap;
+  visibility: hidden;
+  opacity: 0;
+  z-index: 999;
+  transition: visibility 0s, opacity 0.3s linear;
 `;
 
 const Left = styled.div`
@@ -119,8 +154,60 @@ const NavWrapLink = styled.div`
   ${tablet({ display: "none" })}
 `;
 
-const NavLink = styled.p`
+const NavLink = styled.button`
   color: #ffffff;
+  font-size: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+`;
+const NavLink1 = styled.div`
+  /* display: none;
+  height: 50%; */
+  display: none;
+  /* position: absolute; */
+  /* background-color: #d91e1e; */
+  height: 20vh;
+  background-color: #f9f9f9;
+  /* width: 500px; */
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  overflow: hidden;
+`;
+const SubNavLink = styled.button`
+  /* border: none;
+  text-align: start;
+  padding: 10px;
+  color: #5d697a; */
+  float: none;
+  color: #5d697a;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+  border: none;
+  background: none;
+  &:hover {
+    color: #000000;
+  }
+`;
+
+const NavLinkWrapp = styled.div`
+  float: left;
+  overflow: hidden;
+  &:hover ${NavLink1} {
+    display: block;
+    /* max-width: 50px; */
+    /* flex-direction: column; */
+    position: absolute;
+  }
+`;
+
+const ButtonLink = styled.button`
+  font-size: 14px;
+  color: #ffff;
+  border: none;
+  background: none;
 `;
 
 const Right = styled.div`
@@ -149,8 +236,47 @@ const MenuItems = styled.div`
   font-size: 14px;
   cursor: pointer;
   margin-left: 25px;
+  gap: 20px;
   text-decoration: none;
   color: #000000;
+  &:hover ${TxtOrder} {
+    visibility: visible;
+    opacity: 1;
+  }
+  :nth-child(1) {
+    color: white;
+    text-decoration: none;
+  }
+  ${mobile({ fontSize: "12px", marginLeft: "10px" })}
+`;
+const OrderIconWrapp = styled.div`
+  font-size: 14px;
+  cursor: pointer;
+  margin-left: 25px;
+  gap: 20px;
+  text-decoration: none;
+  color: #000000;
+  &:hover ${TxtOrder} {
+    visibility: visible;
+    opacity: 1;
+  }
+  :nth-child(1) {
+    color: white;
+    text-decoration: none;
+  }
+  ${mobile({ fontSize: "12px", marginLeft: "10px" })}
+`;
+const CartIconWrapp = styled.div`
+  font-size: 14px;
+  cursor: pointer;
+  margin-left: 25px;
+  gap: 20px;
+  text-decoration: none;
+  color: #000000;
+  &:hover ${TxtCart} {
+    visibility: visible;
+    opacity: 1;
+  }
   :nth-child(1) {
     color: white;
     text-decoration: none;
@@ -165,24 +291,31 @@ const MenuItems = styled.div`
 const Navbar = () => {
   const [sortProduct, setSortProduct] = useState("");
   const [productFilters, setProductfilters] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
   const qty = useSelector((state) => state.cart.qty);
   const allProduct = useSelector((state) => state.product.products);
   const user = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  //input search di ambil dari filter title
+  //seharusnya di cari dari database langsung
   useEffect(() => {
-    setProductfilters(
-      allProduct.filter((item) =>
+    if (sortProduct) {
+      const data = allProduct.filter((item) =>
         item.title.toLowerCase().includes(sortProduct)
-      )
-    );
+      );
+      setProductfilters(data);
+    }
   }, [sortProduct, allProduct]);
 
-  const handleClick = (e) => {
-    // console.log(productFilters);
+  const handleSearch = (e) => {
     e.preventDefault();
-    navigate("/products", { state: { productFilters, sortProduct } });
+    navigate("/products", { state: { productFilters } });
+  };
+
+  const handleNavLink = (value) => {
+    navigate(`/products/${value}`);
   };
 
   const handleLogout = (e) => {
@@ -194,7 +327,6 @@ const Navbar = () => {
 
   ///
 
-  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleModal = (event) => {
     setAnchorEl(event.currentTarget);
@@ -214,7 +346,7 @@ const Navbar = () => {
               onChange={(e) => setSortProduct(e.target.value.toLowerCase())}
             />
             <Search
-              onClick={handleClick}
+              onClick={handleSearch}
               style={{ color: "white", fontSize: 16 }}
             />
           </SearchContainer>
@@ -224,10 +356,28 @@ const Navbar = () => {
             <h1>SNEAKERS</h1>
           </Logo>
           <NavWrapLink>
-            <NavLink>New Arrival</NavLink>
-            <NavLink>Mens</NavLink>
-            <NavLink>Womens</NavLink>
-            <NavLink>Brands</NavLink>
+            <NavLink onClick={() => handleNavLink("New Arrival")}>
+              NEW ARRIVAL
+            </NavLink>
+            <NavLink onClick={() => handleNavLink("men")}> MEN</NavLink>
+            <NavLink onClick={() => handleNavLink("women")}> WOMEN</NavLink>
+            <NavLinkWrapp>
+              <ButtonLink>BRAND</ButtonLink>
+              <NavLink1>
+                <SubNavLink onClick={() => handleNavLink("adidas")}>
+                  ADIDAS
+                </SubNavLink>
+                <SubNavLink onClick={() => handleNavLink("vans")}>
+                  VANS
+                </SubNavLink>
+                <SubNavLink onClick={() => handleNavLink("converse")}>
+                  CONVERSE
+                </SubNavLink>
+                <SubNavLink onClick={() => handleNavLink("nike")}>
+                  NIKE
+                </SubNavLink>
+              </NavLink1>
+            </NavLinkWrapp>
             <NavLink>Shoes</NavLink>
           </NavWrapLink>
         </Center>
@@ -317,15 +467,24 @@ const Navbar = () => {
               </Link>
             </>
           )}
-          {/* <button onClick={handleLogout}>logout</button> */}
-
-          <MenuItems>
+          {/* Order belanja */}
+          <OrderIconWrapp>
+            <Link to={"/Order"}>
+              <Badge badgeContent={qty} color="error">
+                <Order />
+                <TxtOrder>Order</TxtOrder>
+              </Badge>
+            </Link>
+          </OrderIconWrapp>
+          {/* keranjang belaja */}
+          <CartIconWrapp>
             <Link to={"/cart"}>
               <Badge badgeContent={qty} color="error">
                 <ShoppingCart />
+                <TxtCart>shoppic cart</TxtCart>
               </Badge>
             </Link>
-          </MenuItems>
+          </CartIconWrapp>
         </Right>
       </Wrapper>
     </Container>

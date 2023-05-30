@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { getCategories } from "../redux/apiCall";
+import { getCategories, getProducts } from "../redux/apiCall";
 import { mobile } from "../responsive";
 import { fetchData } from "../useFetch";
 import CategoryItem from "./CategoryItem";
@@ -26,11 +26,12 @@ const Categories = () => {
   }, [dispatch]);
 
   const handleClick = async (e) => {
+    console.log(e);
     try {
-      const res = await fetchData.get(
-        `/products?categories=${e.toUpperCase()}`
-      );
-      navigate("/products", { state: res.data });
+      const brand = e.toLowerCase();
+      // getProducts(dispatch, brand);
+      // console.log(res);
+      navigate(`/products/${brand}`);
     } catch (error) {
       console.log(error);
     }

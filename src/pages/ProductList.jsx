@@ -39,12 +39,10 @@ const Select = styled.select`
 const Option = styled.option``;
 
 const ProductList = () => {
-  const { state } = useLocation();
-  //from navbar untuk set title
-  const sortProduct = state?.sortProduct;
-  //from navbar untuk set title
-  const productFilters = state?.productFilters;
-  // console.log(productFilters);
+  // const { state } = useLocation();
+  // const { productFilters } = state;
+  const location = useLocation();
+  const id = location.pathname?.split("/")[2];
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState();
   const handleFilter = (e) => {
@@ -55,13 +53,11 @@ const ProductList = () => {
     });
   };
 
-  console.log(filters);
-
   return (
     <Container>
       <Navbar />
       <Announcement />
-      <Title>{productFilters ? sortProduct : "allProduct"}</Title>
+      <Title>{id ? id : "allProduct"}</Title>
       <FilterContainer>
         <Filter>
           <FilterText>Filter Products:</FilterText>
@@ -92,7 +88,7 @@ const ProductList = () => {
           </Select>
         </Filter>
       </FilterContainer>
-      {productFilters && "Product yang anda cari tidak ada"}
+      {/* {productFilters && "Product yang anda cari tidak ada"} */}
       <Products filters={filters} sort={sort} />
       <Newsletter />
       <Footer />

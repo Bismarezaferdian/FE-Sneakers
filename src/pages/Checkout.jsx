@@ -201,6 +201,7 @@ const Checkout = () => {
   const pajak = cart.total * 0.11;
   const subTotal = cart?.total + pajak + select.costs?.cost[0]?.value;
 
+  console.log(subTotal);
   const handleToggle = (index) => {
     setOpen((prevOpen) => ({ ...prevOpen, [index]: !prevOpen[index] }));
   };
@@ -250,54 +251,76 @@ const Checkout = () => {
     setValidation(!validation);
   };
 
-  console.log(select?.costs);
+  const currentDate = new Date();
+  const orderID = currentDate.getTime().toString();
+  console.log(parseInt(subTotal.toFixed(0)));
 
   const handleSubmit = async () => {
-    // if (!cart.products || !select.costs || !select.costs.service) {
-    //   runValidation();
-    // }
+    if (!cart.products || !select.costs || !select.costs.service) {
+      runValidation();
+    }
 
-    // const data = {
-    //   userId: cart.userId,
-    //   products: cart.products,
-    //   pengiriman: {
-    //     jasaKirim: select.courier,
-    //     service: select.costs.service,
-    //     Weight: cart.weight,
-    //   },
-    //   pajak: pajak,
-    //   status: "pending",
-    //   total: subTotal,
-    //   address: currentUser.address,
-    // };
-
-    // deleteCart(cart._id);
-    // dispatch(resetState());
-    // AddOrder(data);
-
-    const dataMidtrans = {
-      transaction_details: {
-        order_id: "testnnnns12456784",
-        gross_amount: " 10000",
+    const data = {
+      userId: cart.userId,
+      products: cart.products,
+      pengiriman: {
+        jasaKirim: select.courier,
+        service: select.costs.service,
+        Weight: cart.weight,
       },
-
-      customer_details: {
-        first_name: "Johny",
-        last_name: "Kane",
-        email: "testmidtrans@mailnesia.com",
-        phone: "08111222333",
-      },
+      pajak: pajak,
+      status: "pending",
+      total: subTotal,
+      address: currentUser.address,
     };
 
-    const res = await fetchData.post("/midtrans/transaction", dataMidtrans);
-    window.location.assign(res.data.redirect_url);
-    // snap.pay('YOUR_SNAP_TOKEN', {
-    //   onSuccess: function(result){console.log('success');console.log(result);},
-    //   onPending: function(result){console.log('pending');console.log(result);},
-    //   onError: function(result){console.log('error');console.log(result);},
-    //   onClose: function(){console.log('customer closed the popup without finishing the payment');}
-    // })
+    try {
+      const response = await fetchData.post(`/orders`, data);
+      console.log(response.data._id);
+      const dataMidtrans = {
+        transaction_details: {
+          order_id: response.data._id,
+          gross_amount: parseInt(subTotal.toFixed(0)),
+        },
+
+        customer_details: {
+          first_name: currentUser.firstname,
+          last_name: currentUser.lastname,
+          email: currentUser.email,
+          phone: currentUser.phonenumber,
+        },
+      };
+
+      const res = await fetchData.post("/midtrans/transaction", dataMidtrans);
+      deleteCart(cart._id);
+      dispatch(resetState());
+      window.location.assign(res.data.redirect_url);
+    } catch (error) {
+      console.log(error);
+    }
+
+    // AddOrder(data);
+
+    // const dataMidtrans = {
+    //   transaction_details: {
+    //     order_id: `sneakersku-${orderID}`,
+    //     gross_amount: subTotal,
+    //   },
+
+    //   customer_details: {
+    //     first_name: currentUser.firstname,
+    //     last_name: currentUser.lastname,
+    //     email: currentUser.email,
+    //     phone: currentUser.phonenumber,
+    //   },
+    // };
+
+    // const res = await fetchData.post("/midtrans/transaction", dataMidtrans);
+    // console.log(res.data);
+    // window.location.assign(res.data.redirect_url);
   };
+
+  console.log(currentUser.firstname);
 
   return (
     <div>
