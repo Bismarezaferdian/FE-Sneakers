@@ -7,8 +7,14 @@ import { useEffect, useState } from "react";
 import { fetchData } from "../useFetch";
 import { lightGreen } from "@mui/material/colors";
 import { formatRupiah } from "../utils/formatRupiah";
+import { Box, Button, Input, Modal, Typography } from "@mui/material";
+import { getStatusMidtrans } from "../redux/apiCall";
+import { ContentCopy } from "@mui/icons-material";
+import CopyToClipboard from "react-copy-to-clipboard";
 
-const Container = styled.div``;
+const Container = styled.div`
+  background-color: #f5f5f5;
+`;
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -38,13 +44,16 @@ const TextOrder = styled.p`
   white-space: nowrap;
 `;
 
-const ContentOrder = styled.div``;
+const ContentOrder = styled.div`
+  background-color: #ffff;
+  padding: 0 10px;
+`;
 
 const Product = styled.div`
   display: flex;
   gap: 20px;
-  border-bottom: 1px solid black;
-  margin: 20px;
+  border-bottom: 0.5px solid black;
+  margin-top: 20px;
   align-items: center;
   align-self: center;
   /* background-color: blue; */
@@ -56,7 +65,14 @@ const Product = styled.div`
 const WrappProduct = styled.div`
   /* background: red; */
   display: flex;
+  width: 100%;
   flex-direction: column;
+`;
+
+const ProductContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const ProductDetail = styled.div`
@@ -81,12 +97,11 @@ const Details = styled.div`
 
 const ProductName = styled.span``;
 
-const ProductId = styled.span``;
-
 const ProductColor = styled.div`
   width: 20px;
   height: 20px;
   border-radius: 50%;
+  border: 1px solid black;
   background-color: ${(props) => props.color};
 `;
 
@@ -107,14 +122,55 @@ const PriceDetail = styled.div`
   display: flex;
   flex-direction: column;
   align-items: end;
-  justify-content: center;
+  /* justify-content: center; */
   gap: 10px;
+  /* background-color: red; */
+`;
+
+const ActionWrapp = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  align-items: end;
+  background-color: #fffefb;
+  /* border-bottom: 2px solid black; */
+`;
+
+const ActionContent = styled.div``;
+
+const PaymentNow = styled.button``;
+const ButtonPayment = styled.button`
+  width: 160px;
+  /* padding: 10px; */
+  background-color: #3330e4;
+  border: none;
+  color: white;
+  padding: 10px 0;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-weight: 600;
+  font-size: 16px;
+`;
+const AcceptOrder = styled.button`
+  width: 160px;
+  /* padding: 10px; */
+  background-color: #3330e4;
+  border: none;
+  color: white;
+  padding: 10px 0;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-weight: 600;
+  font-size: 16px;
+  white-space: nowrap;
 `;
 
 const ProductStatus = styled.span`
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 600;
-  /* color: #3330e4; */
   background-color: ${(props) => {
     if (props.status === "pending") {
       return "#E9ECEF";
@@ -126,8 +182,12 @@ const ProductStatus = styled.span`
       return "#CFEBD3";
     }
   }};
-  border: 1px solid black;
-  padding: 4px;
+  /* border: 1px solid black; */
+  width: 120px;
+  text-align: center;
+  padding: 8px 0;
+  border-radius: 4px;
+  /* align-self: end; */
   color: ${(props) => {
     if (props.status === "pending") {
       return "#757D85";
@@ -145,24 +205,53 @@ const ProductPrice = styled.p`
   font-size: 18px;
   font-weight: 600;
 `;
-// const ProductStatus = styled.p`
-//   font-size: 12px;
-//   font-weight: 600;
-//   color: red
-//     /* color: ${(props) => {
-//       if (props.status === "pending") {
-//         return "#F9D949";
-//       } else if (props.status === "failed") {
-//         return "#ef1010";
-//       } else if (props.status === "settlement") {
-//         return "#0ef80a";
-//       }
-//     }} */
-//     ${mobile({ marginBottom: "20px" })};
-// `;
+
+const BankInfo = styled.div`
+  display: flex;
+`;
+
+const InputVa = styled.input`
+  /* background-color: black; */
+  border: none;
+  color: white;
+  font-size: 18px;
+  /* background-color: red; */
+  width: 120px;
+`;
+
+const ButtonCopy = styled.button`
+  background-color: #3330e4;
+  color: #ffff;
+  border: none;
+  cursor: pointer;
+  :disabled {
+    background-color: gray;
+  }
+`;
+//for modal box
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "black",
+  color: "white",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 
 const Order = () => {
   const [order, setOrder] = useState();
+  const [open, setOpen] = useState(false);
+  const [statusMidtrans, setStatusMidtrans] = useState();
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    setOpen(false);
+  }, []);
+
   useEffect(() => {
     const getOrder = async () => {
       try {
@@ -175,12 +264,67 @@ const Order = () => {
     getOrder();
   }, []);
 
-  console.log(order);
+  const handlePending = async (orderId) => {
+    console.log(orderId);
+    // e.preventDefault();
+    try {
+      const data = await getStatusMidtrans(orderId);
+      setStatusMidtrans(data);
+      setOpen(true);
+    } catch (error) {}
+  };
+
+  const handleCopy = () => {
+    setCopied(true);
+    alert(`${statusMidtrans?.va_numbers[0]?.va_number} dicopy`);
+  };
+
+  console.log(statusMidtrans);
+
   return (
     <Container>
-      <Navbar />
+      <Navbar order={order} />
       <Announcement />
       <Wrapper>
+        <Modal
+          open={open}
+          onClose={() => setOpen(false)}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <div>
+              <Typography id="modal-modal-title">
+                Mohon selesaikan pembayaran sebelum :{" "}
+                {statusMidtrans?.expiry_time}
+              </Typography>
+              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                Bank : {statusMidtrans?.va_numbers[0]?.bank}
+              </Typography>
+              <Typography
+                id="modal-modal-description"
+                sx={{
+                  mt: 2,
+                  display: "flex",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Virtual Number:
+                <InputVa
+                  disabled
+                  value={statusMidtrans?.va_numbers[0]?.va_number}
+                />
+                {/* {statusMidtrans?.va_numbers[0]?.va_number} */}
+                <CopyToClipboard
+                  text={statusMidtrans?.va_numbers[0]?.va_number}
+                  onCopy={handleCopy}
+                >
+                  <ButtonCopy disabled={copied}>Copy</ButtonCopy>
+                </CopyToClipboard>
+              </Typography>
+            </div>
+          </Box>
+        </Modal>
         <WrappOrder>
           <WrappNavbarOrder>
             <NavTextOrder>
@@ -199,37 +343,66 @@ const Order = () => {
               <TextOrder>Dibatal</TextOrder>
             </NavTextOrder>
           </WrappNavbarOrder>
-          <ContentOrder>
-            {order?.map((item, i) => (
+          {order?.map((item, i) => (
+            <ContentOrder key={i}>
               <Product>
                 <WrappProduct>
                   {item?.products?.map((products, i) => (
-                    <ProductDetail>
-                      <Image src={products.imgDisplay} />
-                      <Details>
-                        <ProductName>
-                          <b>Product:</b>
-                          {products.title}
-                        </ProductName>
-                        <b>Color:</b>{" "}
-                        <ProductColor color={products.variant.color} />
-                        <ProductSize>
-                          <b>Size:</b>
-                          {products.variant.size}
-                        </ProductSize>
-                      </Details>
-                    </ProductDetail>
+                    <ProductContent key={i}>
+                      <ProductDetail>
+                        <Image src={products.imgDisplay} />
+                        <Details>
+                          <ProductName>
+                            <b>Product:</b>
+                            {products.title}
+                          </ProductName>
+                          <b>Color:</b>{" "}
+                          <ProductColor color={products.variant.color} />
+                          <ProductSize>
+                            <b>Size:</b>
+                            {products.variant.size}
+                          </ProductSize>
+                          <ProductSize>{products.quantity}x</ProductSize>
+                        </Details>
+                      </ProductDetail>
+                      <PriceDetail>
+                        <ProductPrice>
+                          {" "}
+                          {formatRupiah(products.price)}
+                        </ProductPrice>
+                      </PriceDetail>
+                    </ProductContent>
                   ))}
                 </WrappProduct>
-                <PriceDetail>
-                  <ProductStatus status={item.status}>
-                    {item.status}
-                  </ProductStatus>
-                  <ProductPrice>{formatRupiah(item.total)}</ProductPrice>
-                </PriceDetail>
               </Product>
-            ))}
-          </ContentOrder>
+              <ActionWrapp>
+                <ProductStatus status={item.status}>
+                  {item.status}
+                </ProductStatus>
+                <ProductPrice>
+                  {" "}
+                  Total Pesanan :{formatRupiah(item.total)}
+                </ProductPrice>
+                <ActionContent>
+                  {item.status === "settlement" && (
+                    <ButtonPayment>Terima Pesanan</ButtonPayment>
+                  )}
+                  {(item.status === "cancel" || item.status === "failure") && (
+                    <ButtonPayment onClick={() => console.log("first")}>
+                      Bayar Ulang
+                    </ButtonPayment>
+                  )}
+                  {item.status === "pending" && (
+                    <ButtonPayment onClick={() => handlePending(item._id)}>
+                      Belum Bayar
+                    </ButtonPayment>
+                  )}
+
+                  {/* <PaymentNow>Bayar Sekarang</PaymentNow> */}
+                </ActionContent>
+              </ActionWrapp>
+            </ContentOrder>
+          ))}
         </WrappOrder>
         <h1>order</h1>
       </Wrapper>

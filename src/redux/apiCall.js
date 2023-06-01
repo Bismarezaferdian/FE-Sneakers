@@ -106,4 +106,13 @@ export const AddOrder = async (data) => {
   }
 };
 
+export const getStatusMidtrans = async (orderId) => {
+  try {
+    const res = await fetchData.get(`midtrans/transaction/${orderId}`);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 //product seach by new and limit http://localhost:3000/api/v1/products?new=true&limit=2

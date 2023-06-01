@@ -18,11 +18,6 @@ import { logout } from "../redux/userRedux";
 import {
   AccountCircleRounded,
   ArrowRight,
-  Assessment,
-  AssessmentSharp,
-  AssignmentInd,
-  AssignmentTurnedIn,
-  AssignmentTurnedInOutlined,
   Receipt,
   Search,
   ShoppingCartOutlined,
@@ -288,7 +283,7 @@ const CartIconWrapp = styled.div`
 //   font-size: 22px;
 // `;
 
-const Navbar = () => {
+const Navbar = ({ order }) => {
   const [sortProduct, setSortProduct] = useState("");
   const [productFilters, setProductfilters] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -298,6 +293,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const qtyOrder = order?.length;
   //input search di ambil dari filter title
   //seharusnya di cari dari database langsung
   useEffect(() => {
@@ -470,7 +466,7 @@ const Navbar = () => {
           {/* Order belanja */}
           <OrderIconWrapp>
             <Link to={"/Order"}>
-              <Badge badgeContent={qty} color="error">
+              <Badge badgeContent={qtyOrder} color="error">
                 <Order />
                 <TxtOrder>Order</TxtOrder>
               </Badge>

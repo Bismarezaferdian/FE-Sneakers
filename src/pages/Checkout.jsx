@@ -113,26 +113,6 @@ const Text = styled.p`
   font-weight: 600;
   opacity: 0.5;
 `;
-const CourirInfo = styled.div``;
-const Courir = styled.div``;
-const RadioWrappContent = styled.div`
-  display: flex;
-  gap: 20px;
-`;
-const RadioWrapp = styled.div`
-  display: flex;
-  align-items: center;
-  border: 1px solid black;
-  width: 140px;
-`;
-const TextCourir = styled.p`
-  position: absolute;
-  transform: translate(10px, -22px);
-  background: white;
-  padding: 0 6px 0 6px;
-`;
-const Service = styled.div``;
-const Weight = styled.div``;
 const CourirPrice = styled.div``;
 const PaymentInfo = styled.div`
   border-bottom: 0.5px solid #bbbbbb;
@@ -201,7 +181,6 @@ const Checkout = () => {
   const pajak = cart.total * 0.11;
   const subTotal = cart?.total + pajak + select.costs?.cost[0]?.value;
 
-  console.log(subTotal);
   const handleToggle = (index) => {
     setOpen((prevOpen) => ({ ...prevOpen, [index]: !prevOpen[index] }));
   };
@@ -320,8 +299,6 @@ const Checkout = () => {
     // console.log(res.data);
     // window.location.assign(res.data.redirect_url);
   };
-
-  console.log(currentUser.firstname);
 
   return (
     <div>
