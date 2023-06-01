@@ -224,6 +224,7 @@ const Checkout = () => {
     }
   }, [select.provinceId]);
 
+  console.log(cart);
   useEffect(() => {
     const getCost = async () => {
       const res = await fetchData.post("/cekOngkir/cost", {
@@ -251,9 +252,9 @@ const Checkout = () => {
     setValidation(!validation);
   };
 
-  const currentDate = new Date();
-  const orderID = currentDate.getTime().toString();
-  console.log(parseInt(subTotal.toFixed(0)));
+  // const currentDate = new Date();
+  // const orderID = currentDate.getTime().toString();
+  // console.log(parseInt(subTotal.toFixed(0)));
 
   const handleSubmit = async () => {
     if (!cart.products || !select.costs || !select.costs.service) {

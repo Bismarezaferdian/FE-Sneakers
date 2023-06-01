@@ -6,6 +6,7 @@ import { mobile } from "../responsive";
 import { useEffect, useState } from "react";
 import { fetchData } from "../useFetch";
 import { lightGreen } from "@mui/material/colors";
+import { formatRupiah } from "../utils/formatRupiah";
 
 const Container = styled.div``;
 
@@ -44,19 +45,22 @@ const Product = styled.div`
   gap: 20px;
   border-bottom: 1px solid black;
   margin: 20px;
-  /* justify-content: space-between; */
+  align-items: center;
+  align-self: center;
+  /* background-color: blue; */
+  justify-content: space-between;
 
   ${mobile({ flexDirection: "column" })}
 `;
 
 const WrappProduct = styled.div`
-  background: red;
+  /* background: red; */
   display: flex;
   flex-direction: column;
 `;
 
 const ProductDetail = styled.div`
-  flex: 2;
+  /* flex: 2; */
   display: flex;
   padding: 10px;
 `;
@@ -88,14 +92,6 @@ const ProductColor = styled.div`
 
 const ProductSize = styled.span``;
 
-const PriceDetail = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-
 const ProductAmountContainer = styled.div`
   display: flex;
   align-items: center;
@@ -106,12 +102,64 @@ export const Btn = styled.button`
   /* background-color: red; */
 `;
 
-const ProductPrice = styled.div`
-  font-size: 30px;
-  font-weight: 200;
-  color: #404b69;
-  ${mobile({ marginBottom: "20px" })};
+const PriceDetail = styled.div`
+  /* flex: 1; */
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  justify-content: center;
+  gap: 10px;
 `;
+
+const ProductStatus = styled.span`
+  font-size: 14px;
+  font-weight: 600;
+  /* color: #3330e4; */
+  background-color: ${(props) => {
+    if (props.status === "pending") {
+      return "#E9ECEF";
+    } else if (props.status === "cancel") {
+      return "#F6E1E6";
+    } else if (props.status === "expire") {
+      return "#F6E1E6";
+    } else if (props.status === "settlement") {
+      return "#CFEBD3";
+    }
+  }};
+  border: 1px solid black;
+  padding: 4px;
+  color: ${(props) => {
+    if (props.status === "pending") {
+      return "#757D85";
+    } else if (props.status === "cancel") {
+      return "#D3385C";
+    } else if (props.status === "expire") {
+      return "#D3385C";
+    } else if (props.status === "settlement") {
+      return "#55BE63";
+    }
+  }};
+`;
+
+const ProductPrice = styled.p`
+  font-size: 18px;
+  font-weight: 600;
+`;
+// const ProductStatus = styled.p`
+//   font-size: 12px;
+//   font-weight: 600;
+//   color: red
+//     /* color: ${(props) => {
+//       if (props.status === "pending") {
+//         return "#F9D949";
+//       } else if (props.status === "failed") {
+//         return "#ef1010";
+//       } else if (props.status === "settlement") {
+//         return "#0ef80a";
+//       }
+//     }} */
+//     ${mobile({ marginBottom: "20px" })};
+// `;
 
 const Order = () => {
   const [order, setOrder] = useState();
@@ -154,8 +202,8 @@ const Order = () => {
           <ContentOrder>
             {order?.map((item, i) => (
               <Product>
-                {item?.products?.map((products, i) => (
-                  <WrappProduct>
+                <WrappProduct>
+                  {item?.products?.map((products, i) => (
                     <ProductDetail>
                       <Image src={products.imgDisplay} />
                       <Details>
@@ -171,12 +219,13 @@ const Order = () => {
                         </ProductSize>
                       </Details>
                     </ProductDetail>
-                  </WrappProduct>
-                ))}
+                  ))}
+                </WrappProduct>
                 <PriceDetail>
-                  <ProductAmountContainer></ProductAmountContainer>
-                  <ProductPrice>{item.status}</ProductPrice>
-                  <ProductPrice>{item.total}</ProductPrice>
+                  <ProductStatus status={item.status}>
+                    {item.status}
+                  </ProductStatus>
+                  <ProductPrice>{formatRupiah(item.total)}</ProductPrice>
                 </PriceDetail>
               </Product>
             ))}
