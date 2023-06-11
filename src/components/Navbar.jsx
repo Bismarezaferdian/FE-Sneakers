@@ -18,16 +18,20 @@ import { logout } from "../redux/userRedux";
 import {
   AccountCircleRounded,
   ArrowRight,
+  DensityLarge,
+  DensitySmall,
+  Person,
   Receipt,
   Search,
   ShoppingCartOutlined,
 } from "@mui/icons-material";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import { Badge } from "@mui/material";
+import Sidebar from "./Sidebar";
 
 const Container = styled.nav`
   position: sticky;
-  top: 0;
+  /* top: 0; */
   z-index: 900;
   /* height: 80px; */
   background: #3330e4;
@@ -41,9 +45,50 @@ const Wrapper = styled.div`
   padding: 0 20px;
   display: flex;
   width: 100%;
+  align-items: center;
   /* overflow: hidden; */
-  ${mobile({ padding: "10px 0px" })}/* align-items: center; */
+  ${tablet({ padding: "10px 0px" })}/* align-items: center; */
   /* justify-content: space-between; */
+`;
+
+const BurgerIcon = styled(DensityLarge)``;
+
+const Left = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  ${tablet({ display: "none" })}
+`;
+
+const Language = styled.span`
+  font-size: 14px;
+  cursor: pointer;
+  ${tablet({ display: "none" })}
+  ${mobile({ display: "none" })}
+`;
+
+const SearchContainer = styled.div`
+  border: 0.5px solid lightgray;
+  display: flex;
+  align-items: center;
+  margin-left: 25px;
+  padding: 5px;
+  ${mobile({ display: "none" })}
+  ${tablet({ display: "none" })}
+`;
+
+const Input = styled.input`
+  border: none;
+  outline: none;
+  padding: 5px;
+  margin-right: 5px;
+  box-shadow: none;
+  &:active {
+    outline: none;
+    box-shadow: none;
+  }
+  ${mobile({ width: "50px" })}
 `;
 
 const ShoppingCart = styled(ShoppingCartOutlined)`
@@ -88,47 +133,19 @@ const TxtCart = styled.span`
   transition: visibility 0s, opacity 0.3s linear;
 `;
 
-const Left = styled.div`
-  flex: 1;
-  display: flex;
-  align-items: center;
-`;
-
-const Language = styled.span`
-  font-size: 14px;
-  cursor: pointer;
-  ${mobile({ display: "none" })}
-`;
-
-const SearchContainer = styled.div`
-  border: 0.5px solid lightgray;
-  display: flex;
-  align-items: center;
-  margin-left: 25px;
-  padding: 5px;
-`;
-
-const Input = styled.input`
-  border: none;
-  outline: none;
-  padding: 5px;
-  margin-right: 5px;
-  box-shadow: none;
-  &:active {
-    outline: none;
-    box-shadow: none;
-  }
-  ${mobile({ width: "50px" })}
-`;
-
 const Center = styled.div`
   flex: 1;
   text-align: center;
   display: flex;
   height: 100%;
+  align-items: center;
   /* align-items: center; */
   /* justify-content: center; */
   flex-direction: column;
+  ${tablet({
+    // alignItems: "star",
+    marginLeft: "10px",
+  })}
 `;
 
 const Logo = styled(Link)`
@@ -137,8 +154,10 @@ const Logo = styled(Link)`
   color: #ffffff;
   /* margin-top: 20px; */
   /* color:  #000000; */
+`;
 
-  ${mobile({ fontSize: "24px" })}
+const TextLogo = styled.span`
+  ${tablet({})}
 `;
 
 const NavWrapLink = styled.div`
@@ -206,11 +225,15 @@ const ButtonLink = styled.button`
 `;
 
 const Right = styled.div`
-  flex: 1;
+  /* flex: 1; */
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  ${mobile({ flex: 2, justifyContent: "center" })}
+  ${tablet({
+    display: "flex",
+    position: "absolute",
+    transform: "translate(220px,0)",
+  })}
 `;
 
 export const UserIcon = styled.div`
@@ -234,6 +257,7 @@ const MenuItems = styled.div`
   gap: 20px;
   text-decoration: none;
   color: #000000;
+  white-space: nowrap;
   &:hover ${TxtOrder} {
     visibility: visible;
     opacity: 1;
@@ -242,7 +266,7 @@ const MenuItems = styled.div`
     color: white;
     text-decoration: none;
   }
-  ${mobile({ fontSize: "12px", marginLeft: "10px" })}
+  ${tablet({ fontSize: "18px", marginLeft: "10px" })}
 `;
 const OrderIconWrapp = styled.div`
   font-size: 14px;
@@ -288,12 +312,12 @@ const Navbar = ({ order }) => {
   const [productFilters, setProductfilters] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const qty = useSelector((state) => state.cart.qty);
+  const qtyOrder = useSelector((state) => state.order.orders);
   const allProduct = useSelector((state) => state.product.products);
   const user = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const qtyOrder = order?.length;
   //input search di ambil dari filter title
   //seharusnya di cari dari database langsung
   useEffect(() => {
@@ -334,6 +358,9 @@ const Navbar = ({ order }) => {
   return (
     <Container>
       <Wrapper>
+        <MenuItems>
+          <BurgerIcon />
+        </MenuItems>
         <Left>
           <Language>EN</Language>
           <SearchContainer>
@@ -349,7 +376,7 @@ const Navbar = ({ order }) => {
         </Left>
         <Center>
           <Logo to={"/"}>
-            <h1>SNEAKERS</h1>
+            <TextLogo>SNEAKERS</TextLogo>
           </Logo>
           <NavWrapLink>
             <NavLink onClick={() => handleNavLink("New Arrival")}>
@@ -379,109 +406,115 @@ const Navbar = ({ order }) => {
         </Center>
 
         <Right>
-          {user ? (
-            <>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  textAlign: "center",
-                }}
-              >
-                <Tooltip title="Account settings">
-                  <IconButton
-                    onClick={handleModal}
-                    size="small"
-                    sx={{ ml: 2 }}
-                    aria-controls={open ? "account-menu" : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? "true" : undefined}
-                  >
-                    <Avatar sx={{ width: 32, height: 32 }}>
-                      "bisma"
-                      {/* <UserName>{name}</UserName> */}
-                    </Avatar>
-                  </IconButton>
-                </Tooltip>
-              </Box>
-              <Menu
-                anchorEl={anchorEl}
-                id="account-menu"
-                open={open}
-                onClose={handleClose}
-                onClick={handleClose}
-                PaperProps={{
-                  elevation: 0,
-                  sx: {
-                    overflow: "visible",
-                    filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                    mt: 1.5,
-                    "& .MuiAvatar-root": {
-                      width: 32,
-                      height: 32,
-                      ml: -0.5,
-                      mr: 1,
-                    },
-                    "&:before": {
-                      content: '""',
-                      display: "block",
-                      position: "absolute",
-                      top: 0,
-                      right: 14,
-                      width: 10,
-                      height: 10,
-                      bgcolor: "background.paper",
-                      transform: "translateY(-50%) rotate(45deg)",
-                      zIndex: 0,
-                    },
-                  },
-                }}
-                transformOrigin={{ horizontal: "right", vertical: "top" }}
-                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-              >
-                <MenuItem disabled>
-                  <Avatar /> Profile
-                </MenuItem>
-                <MenuItem disabled>
-                  <Avatar /> My account
-                </MenuItem>
-                <Divider />
-
-                <MenuItem onClick={handleLogout}>
-                  <ListItemIcon>
-                    <ArrowRight />
-                  </ListItemIcon>
-                  Logout
-                </MenuItem>
-              </Menu>
-            </>
-          ) : (
-            <>
-              <MenuItems>REGISTER</MenuItems>
-              <Link to={"/login"}>
-                <MenuItems>SIGN IN</MenuItems>
-              </Link>
-            </>
-          )}
           {/* Order belanja */}
-          <OrderIconWrapp>
-            <Link to={"/Order"}>
-              <Badge badgeContent={qtyOrder} color="error">
-                <Order />
-                <TxtOrder>Order</TxtOrder>
-              </Badge>
-            </Link>
-          </OrderIconWrapp>
+          {user && (
+            <OrderIconWrapp>
+              <Link to={"/Order"}>
+                <Badge badgeContent={qtyOrder.length} color="error">
+                  <Order />
+                  <TxtOrder>Order</TxtOrder>
+                </Badge>
+              </Link>
+            </OrderIconWrapp>
+          )}
+          {user && (
+            <CartIconWrapp>
+              <Link to={"/cart"}>
+                <Badge badgeContent={qty} color="error">
+                  <ShoppingCart />
+                  <TxtCart>shoppic cart</TxtCart>
+                </Badge>
+              </Link>
+            </CartIconWrapp>
+          )}
+
           {/* keranjang belaja */}
-          <CartIconWrapp>
-            <Link to={"/cart"}>
-              <Badge badgeContent={qty} color="error">
-                <ShoppingCart />
-                <TxtCart>shoppic cart</TxtCart>
-              </Badge>
-            </Link>
-          </CartIconWrapp>
         </Right>
+        {user ? (
+          <>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                textAlign: "center",
+              }}
+            >
+              <Tooltip title="Account settings">
+                <IconButton
+                  onClick={handleModal}
+                  size="small"
+                  sx={{ ml: 2 }}
+                  aria-controls={open ? "account-menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? "true" : undefined}
+                >
+                  <Avatar sx={{ width: 32, height: 32 }}>
+                    "bisma"
+                    {/* <UserName>{name}</UserName> */}
+                  </Avatar>
+                </IconButton>
+              </Tooltip>
+            </Box>
+            <Menu
+              anchorEl={anchorEl}
+              id="account-menu"
+              open={open}
+              onClose={handleClose}
+              onClick={handleClose}
+              PaperProps={{
+                elevation: 0,
+                sx: {
+                  overflow: "visible",
+                  filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                  mt: 1.5,
+                  "& .MuiAvatar-root": {
+                    width: 32,
+                    height: 32,
+                    ml: -0.5,
+                    mr: 1,
+                  },
+                  "&:before": {
+                    content: '""',
+                    display: "block",
+                    position: "absolute",
+                    top: 0,
+                    right: 14,
+                    width: 10,
+                    height: 10,
+                    bgcolor: "background.paper",
+                    transform: "translateY(-50%) rotate(45deg)",
+                    zIndex: 0,
+                  },
+                },
+              }}
+              transformOrigin={{ horizontal: "right", vertical: "top" }}
+              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+            >
+              <MenuItem disabled>
+                <Avatar /> Profile
+              </MenuItem>
+              <MenuItem disabled>
+                <Avatar /> My account
+              </MenuItem>
+              <Divider />
+
+              <MenuItem onClick={handleLogout}>
+                <ListItemIcon>
+                  <ArrowRight />
+                </ListItemIcon>
+                Logout
+              </MenuItem>
+            </Menu>
+          </>
+        ) : (
+          <>
+            <Link to={"/login"}>
+              <MenuItems>
+                <Person />
+              </MenuItems>
+            </Link>
+          </>
+        )}
       </Wrapper>
     </Container>
   );

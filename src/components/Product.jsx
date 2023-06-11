@@ -2,6 +2,7 @@ import { SearchOutlined } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { formatRupiah } from "../utils/formatRupiah";
+import { tablet } from "../responsive";
 
 const Info = styled.div`
   opacity: 0;
@@ -22,19 +23,26 @@ const Info = styled.div`
 const Container = styled.div`
   flex: 1;
   margin: 5px;
-  min-width: 280px;
   height: 350px;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  background-color: #ffffff;
+  background-color: #ffff;
   position: relative;
 
   &:hover ${Info} {
     opacity: 1;
     /* border-radius: 50%; */
   }
+
+  ${tablet({
+    height: "200px",
+    // minWidth: "200px",
+    maxWidth: "200px",
+    width: "100%",
+  })}
 `;
 
 export const Title = styled.p`
@@ -43,6 +51,7 @@ export const Title = styled.p`
   font-weight: 600;
   align-items: center;
   letter-spacing: 2px;
+  ${tablet({ textAlign: "center" })}
 `;
 
 export const Price = styled.p`

@@ -11,9 +11,14 @@ import CategoryItem from "./CategoryItem";
 const Container = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  padding: 20px 40px;
+  /* padding: 20px 40px; */
   justify-content: space-between;
-  ${mobile({ padding: "0px", flexDirection: "column" })}
+  ${mobile({
+    padding: "10px",
+    // height: "10vh",
+    // flexDirection: "column",
+    // backgroundColor: "red",
+  })}
 `;
 
 const Categories = () => {

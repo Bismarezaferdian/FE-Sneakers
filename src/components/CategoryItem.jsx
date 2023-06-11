@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { mobile } from "../responsive";
+import { mobile, tablet } from "../responsive";
 
 const Container = styled.div`
   flex: 1;
@@ -10,13 +10,14 @@ const Container = styled.div`
   /* background-color: red; */
   border-radius: 50%;
   position: relative;
+  ${tablet({ height: "12vh" })}
 `;
 
 const Image = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  ${mobile({ height: "20vh" })}
+  ${tablet({ height: "83px", width: "83px" })}
 `;
 
 // const Info = styled.div`

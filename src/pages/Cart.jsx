@@ -8,17 +8,20 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { deleteProductCart, getCart, updatecart } from "../redux/apiCall";
 import { addQty, removeQty } from "../redux/cartRedux";
-import { mobile } from "../responsive";
-import { useNavigate } from "react-router-dom";
+import { mobile, tablet } from "../responsive";
+import { Link, useNavigate } from "react-router-dom";
 import { formatRupiah } from "../utils/formatRupiah";
 import { ToastContainer } from "react-toastify";
 import { errorMessage } from "../utils/Toastify";
 var debounce = require("lodash.debounce");
 
-const Container = styled.div``;
+const Container = styled.div`
+  overflow: hidden;
+`;
 
 const Wrapper = styled.div`
   padding: 20px;
+  ${tablet({ padding: "10px" })}
   ${mobile({ padding: "10px" })}
 `;
 
@@ -44,8 +47,13 @@ const TopButton = styled.button`
   color: ${(props) => props.type === "filled" && "white"};
 `;
 
+const LinkTo = styled(Link)`
+  text-decoration: none;
+  color: #000000;
+`;
+
 const TopTexts = styled.div`
-  ${mobile({ display: "none" })}
+  ${tablet({ display: "none" })}
 `;
 const TopText = styled.span`
   text-decoration: underline;
@@ -56,6 +64,7 @@ const TopText = styled.span`
 const Bottom = styled.div`
   display: flex;
   justify-content: space-between;
+  ${tablet({ flexDirection: "column" })}
   ${mobile({ flexDirection: "column" })}
 `;
 
@@ -68,8 +77,7 @@ const Product = styled.div`
   gap: 20px;
   border-bottom: 1px solid black;
   margin: 20px;
-  /* justify-content: space-between; */
-
+  ${tablet({ flexDirection: "column", margin: "0px" })}
   ${mobile({ flexDirection: "column" })}
 `;
 
@@ -77,6 +85,7 @@ const ProductDetail = styled.div`
   flex: 2;
   display: flex;
   padding: 10px;
+  ${tablet({ flexDirection: "column", justifyContent: "center", flex: "1" })};
 `;
 
 const Image = styled.img`
@@ -84,10 +93,11 @@ const Image = styled.img`
 `;
 
 const Details = styled.div`
-  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  padding: 20px;
+  ${tablet({ padding: "10px" })}
 `;
 
 const ProductName = styled.span``;
@@ -180,8 +190,6 @@ const Button = styled.button`
   display: inline-block;
   font-weight: 600;
   font-size: 16px;
-  /* color: white;
-  */
 `;
 
 const Cart = () => {
@@ -191,9 +199,10 @@ const Cart = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    getCart(userId, dispatch);
-  }, [userId, dispatch]);
+  //dipindah ke halaman home
+  // useEffect(() => {
+  //   getCart(userId, dispatch);
+  // }, [userId, dispatch]);
 
   //handle button dengan bounce /untuk kasi jeda user bisa click button plus
   const debouncedHandleQty = debounce((item, action) => {
@@ -238,12 +247,14 @@ const Cart = () => {
       <Wrapper>
         <Title>YOUR BAG</Title>
         <Top>
-          <TopButton>CONTINUE SHOPPING</TopButton>
+          <TopButton>
+            <LinkTo to={"/products"}>CONTINUE SHOPPING</LinkTo>
+          </TopButton>
           <TopTexts>
             <TopText>Shopping Bag(2)</TopText>
             <TopText>Your Wishlist (0)</TopText>
           </TopTexts>
-          <TopButton type="filled">CHECKOUT NOW</TopButton>
+          {/* <TopButton type="filled">CHECKOUT NOW</TopButton> */}
         </Top>
         <Bottom>
           <Info>

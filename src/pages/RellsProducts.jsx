@@ -5,6 +5,7 @@ import { Navigation } from "swiper";
 import Rells from "../components/Rells";
 import { Link } from "react-router-dom";
 import { fetchData } from "../useFetch";
+import { tablet } from "../responsive";
 
 export const Container = styled.div`
   display: grid;
@@ -15,10 +16,12 @@ export const WrappTitle = styled.div`
   display: flex;
   justify-content: space-between;
   margin: 0 60px;
+  ${tablet({ margin: " 0 10px" })}
 `;
 export const HeaderTitle = styled.p`
   font-size: 18px;
   font-weight: 600;
+  ${tablet({ fontSize: "14px" })}
 `;
 export const LinkTitle = styled(Link)`
   font-size: 18px;
@@ -26,10 +29,11 @@ export const LinkTitle = styled(Link)`
   text-decoration: none;
   /* list-style: none; */
   color: blue;
+  ${tablet({ fontSize: "14px" })}
 `;
 
 export const Title = styled.p`
-  padding-left: 60px;
+  /* padding-left: 60px; */
   font-weight: 600;
   text-transform: capitalize;
   font-size: 24px;
@@ -38,6 +42,7 @@ export const Title = styled.p`
   display: grid;
   justify-content: center;
   align-items: center;
+  ${tablet({ paddingLeft: "20px", marginTop: "10px" })}
 `;
 
 export const SlideWrapp = styled.div`
@@ -46,6 +51,7 @@ export const SlideWrapp = styled.div`
   margin: 20px 0 20px 0;
   max-width: 100vw;
   overflow: hidden;
+  ${tablet({ padding: "2px" })}
 `;
 
 const RellsProducts = () => {

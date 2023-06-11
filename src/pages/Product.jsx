@@ -10,7 +10,7 @@ import Newsletter from "../components/Newsletter";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from "swiper";
 import { addToCart } from "../redux/cartRedux";
-import { mobile } from "../responsive";
+import { mobile, tablet } from "../responsive";
 import { fetchData } from "../useFetch";
 import Sliders from "../components/Slider";
 import { updatecart } from "../redux/apiCall";
@@ -21,9 +21,12 @@ import { ToastContainer } from "react-toastify";
 const Container = styled.div``;
 
 const Wrapper = styled.div`
-  padding: 50px;
   display: flex;
-  ${mobile({ padding: "10px", flexDirection: "column" })}
+  padding: 50px;
+  ${tablet({
+    padding: "10px",
+    flexDirection: "column",
+  })}
 `;
 
 const ImgContainer = styled.div`
@@ -35,7 +38,7 @@ const ImgContainer = styled.div`
   height: 400px; */
   position: relative;
   overflow: hidden;
-  ${mobile({ display: "none" })}
+  ${tablet({ padding: "10px" })}
 `;
 
 // const Image = styled.img`
@@ -48,7 +51,7 @@ const ImgContainer = styled.div`
 const InfoContainer = styled.div`
   flex: 1;
   padding: 0px 50px;
-  ${mobile({ padding: "10px" })}
+  ${tablet({ padding: "10px" })}
 `;
 
 const Title = styled.h1`
@@ -130,7 +133,12 @@ const AddContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  ${mobile({ width: "100%" })}
+  ${tablet({
+    width: "100%",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    gap: "10px",
+  })}
 `;
 
 const AmountContainer = styled.div`
@@ -340,7 +348,7 @@ const Product = () => {
         </ImgContainer>
         <InfoContainer>
           <Title>{product.title}</Title>
-          <Title>{toLocaleString(product.createdAt)}</Title>
+          {/* <Title>{toLocaleString(product.createdAt)}</Title> */}
           <Desc>{product.desc}</Desc>
           <Price>{product.price}</Price>
 

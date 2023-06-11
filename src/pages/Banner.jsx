@@ -4,15 +4,16 @@ import { Autoplay, Navigation, Pagination } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Slider from "../components/Slider";
 import { sliderItems } from "../data";
-import { mobile } from "../responsive";
+import { mobile, tablet } from "../responsive";
 
 export const Container = styled.div`
   padding: 20px 40px;
   display: flex;
   max-height: 60vh;
+  /* width: 100%; */
   position: relative;
   overflow: hidden;
-  ${mobile({ display: "none" })}
+  ${tablet({ padding: "0" })}
 `;
 
 const Banner = () => {

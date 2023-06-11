@@ -16,7 +16,7 @@ export const Container = styled.div`
 export const SlideWrapp = styled.div`
   justify-content: center;
   /* gap: 20px; */
-  padding: 0 40px;
+  padding: 0 10px;
   /* width:  */
   text-decoration: none;
 
@@ -50,7 +50,7 @@ const NewArrival = () => {
     <Container>
       <SlideWrapp>
         <Swiper
-          slidesPerView={4.5}
+          slidesPerView={window.innerWidth < 760 ? 2.5 : 4.5}
           spaceBetween={30}
           autoplay={{
             delay: 3000,
@@ -72,7 +72,7 @@ const NewArrival = () => {
       </SlideWrapp>
       <SlideWrapp>
         <Swiper
-          slidesPerView={4.5}
+          slidesPerView={window.innerWidth < 760 ? 2.5 : 4.5}
           spaceBetween={30}
           loop={true}
           autoplay={{

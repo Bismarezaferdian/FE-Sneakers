@@ -11,6 +11,7 @@ import {
   getProductSucces,
 } from "./productRedux";
 import { addCartFailure, addCartStart, addToCart } from "./cartRedux";
+import { getOrderFailure, getOrderStart, getOrderSuccess } from "./orderRedux";
 
 export const login = async (dispatch, user) => {
   console.log(user);
@@ -94,6 +95,17 @@ export const deleteCart = async (id) => {
     await fetchData.delete(`/carts/${id}`);
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const getOrder = async (dispatch) => {
+  try {
+    dispatch(getOrderStart());
+    const res = await fetchData.get("/orders");
+    console.log(res.data);
+    dispatch(getOrderSuccess(res.data));
+  } catch (error) {
+    dispatch(getOrderFailure());
   }
 };
 
