@@ -14,20 +14,23 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 
 const Container = styled.section`
-  padding: 20px;
-  min-height: 100vh;
-  position: relative;
+  padding: 30px 20px 20px 20px;
+  position: fixed;
   z-index: 999;
   width: 100vw;
-  top: 0;
-  overflow: hidden;
   background-color: #3330e4;
+  left: 0px;
+  top: 0px;
+  transition: all 1.2s ease-in-out;
+  opacity: ${({ isOpen }) => (isOpen ? "1" : "0.5")};
+  top: ${(props) => (props.isOpen ? "0" : "-110%")};
+  max-height: 100%;
+  overflow-y: scroll;
 `;
 const ContentWrapp = styled.div`
   display: flex;
   flex-direction: column;
   width: 90%;
-  height: 100%;
   padding-bottom: 400px;
 `;
 
@@ -41,8 +44,6 @@ const Logo = styled(Link)`
   font-weight: bold;
   text-decoration: none;
   color: #ffffff;
-  /* margin-top: 20px; */
-  /* color:  #000000; */
 `;
 
 const ShoppingCart = styled(ShoppingCartOutlined)`
@@ -140,6 +141,7 @@ const CartIconWrapp = styled.div`
 
 const BurgerIcon = styled(Close)`
   color: #ffff;
+  cursor: pointer;
 `;
 const NavWrapp = styled.div`
   display: flex;
@@ -151,7 +153,7 @@ const NavWrapp = styled.div`
 
 const SubNavWrapp = styled.div`
   /* position: absolute; */
-  display: flex;
+  display: ${(props) => (props.dropdown ? "flex" : "none")};
   flex-direction: column;
   margin-left: 28px;
   width: 90%;
@@ -172,24 +174,28 @@ const TxtNav = styled.span`
   padding: 10px 0;
   font-size: 18px;
   color: #ffff;
+  transition: all 0.8s ease-in-out;
 `;
 
 const IconDown = styled(ArrowDropDown)`
   color: #ffff;
+  transform: ${(props) => (props.dropdown ? "rotate(0deg)" : "rotate(-90deg)")};
 `;
 
-function Sidebar() {
+function Sidebar({ togle, isOpen }) {
   const user = useSelector((state) => state.user.currentUser);
   const qty = useSelector((state) => state.cart.qty);
   const qtyOrder = useSelector((state) => state.order.orders);
-  const { categories } = useSelector((state) => state.categorie);
-  console.log(categories);
+  const { categories } = useSelector((state) => state?.categorie);
+  const [dropdown, setDropdown] = useState(false);
+  const [closePage, setClosePage] = useState(false);
 
+  console.log(categories);
   return (
-    <Container>
+    <Container isOpen={isOpen}>
       <ContentWrapp>
         <HeaderWrapp>
-          <IconWrapp>
+          <IconWrapp onClick={togle}>
             <BurgerIcon />
           </IconWrapp>
           <Logo to={"/"}>
@@ -231,16 +237,16 @@ function Sidebar() {
             {" "}
             <TxtNav>womens</TxtNav>
           </NavLink>
-          <NavLink>
+          <NavLink onClick={() => setDropdown(!dropdown)}>
             {" "}
             <TxtNav>Brans</TxtNav>
             <TxtNav>
-              <IconDown />
+              <IconDown dropdown={dropdown.toString()} />
             </TxtNav>
           </NavLink>
-          <SubNavWrapp>
-            {categories.map((item) => (
-              <NavLink key={item.id}>
+          <SubNavWrapp dropdown={dropdown}>
+            {categories?.map((item, i) => (
+              <NavLink key={i}>
                 <TxtNav>{item.brand}</TxtNav>
               </NavLink>
             ))}

@@ -41,7 +41,7 @@ export const getProducts = async (dispatch, cat) => {
     const res = await fetchData.get(
       cat ? `/products?categories=${cat}` : "/products/"
     );
-
+    console.log(res);
     if (res.data.length <= 0) alert("product tidak ada");
     dispatch(getProductSucces(res.data));
     // dispatch(cat ? getProductFilter(res.data) : getProductSucces(res.data));

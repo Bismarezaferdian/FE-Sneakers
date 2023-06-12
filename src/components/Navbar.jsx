@@ -51,7 +51,10 @@ const Wrapper = styled.div`
   /* justify-content: space-between; */
 `;
 
-const BurgerIcon = styled(DensityLarge)``;
+const BurgerIcon = styled(DensityLarge)`
+  color: #ffff;
+  cursor: pointer;
+`;
 
 const Left = styled.div`
   flex: 1;
@@ -307,7 +310,7 @@ const CartIconWrapp = styled.div`
 //   font-size: 22px;
 // `;
 
-const Navbar = ({ order }) => {
+const Navbar = ({ order, togle }) => {
   const [sortProduct, setSortProduct] = useState("");
   const [productFilters, setProductfilters] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -354,12 +357,13 @@ const Navbar = ({ order }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  // console.log(togle);
 
   return (
     <Container>
       <Wrapper>
         <MenuItems>
-          <BurgerIcon />
+          <BurgerIcon onClick={togle} />
         </MenuItems>
         <Left>
           <Language>EN</Language>

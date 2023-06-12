@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Categories from "../components/Categories";
@@ -38,6 +38,7 @@ export const Title = styled.p`
 `;
 
 const Home = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const userId = useSelector((state) => state.user.currentUser?._id);
   const dispatch = useDispatch();
 
@@ -45,12 +46,19 @@ const Home = () => {
     getCart(userId, dispatch);
     getOrder(dispatch);
   }, [userId, dispatch]);
+
+  const togle = () => {
+    setIsOpen(!isOpen);
+    console.log("run");
+  };
+
+  console.log(isOpen);
   return (
     <>
       <ToastContainer />
-      <Sidebar />
+      <Sidebar togle={togle} isOpen={isOpen} />
       <Announcement />
-      <Navbar />
+      <Navbar togle={togle} />
       <Banner />
       <Title>New Arrival</Title>
       <NewArrival />
