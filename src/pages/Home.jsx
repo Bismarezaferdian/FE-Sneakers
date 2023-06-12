@@ -49,10 +49,8 @@ const Home = () => {
 
   const togle = () => {
     setIsOpen(!isOpen);
-    console.log("run");
   };
 
-  console.log(isOpen);
   return (
     <>
       <ToastContainer />

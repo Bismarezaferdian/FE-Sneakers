@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { mobile, tablet } from "../responsive";
+import { tablet } from "../responsive";
 
 const Container = styled.div`
   flex: 1;

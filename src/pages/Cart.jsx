@@ -1,12 +1,11 @@
 // import { Add, Remove } from "@material-ui/icons";
 import { Add, Remove } from "@mui/icons-material";
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-import { deleteProductCart, getCart, updatecart } from "../redux/apiCall";
+import { deleteProductCart, updatecart } from "../redux/apiCall";
 import { addQty, removeQty } from "../redux/cartRedux";
 import { mobile, tablet } from "../responsive";
 import { Link, useNavigate } from "react-router-dom";

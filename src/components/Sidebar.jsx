@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   ArrowDropDown,
   Close,
-  DensityLarge,
   Receipt,
   ShoppingCartOutlined,
 } from "@mui/icons-material";
@@ -188,9 +187,7 @@ function Sidebar({ togle, isOpen }) {
   const qtyOrder = useSelector((state) => state.order.orders);
   const { categories } = useSelector((state) => state?.categorie);
   const [dropdown, setDropdown] = useState(false);
-  const [closePage, setClosePage] = useState(false);
 
-  console.log(categories);
   return (
     <Container isOpen={isOpen}>
       <ContentWrapp>

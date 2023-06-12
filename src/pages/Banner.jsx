@@ -4,7 +4,7 @@ import { Autoplay, Navigation, Pagination } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Slider from "../components/Slider";
 import { sliderItems } from "../data";
-import { mobile, tablet } from "../responsive";
+import { tablet } from "../responsive";
 
 export const Container = styled.div`
   padding: 20px 40px;

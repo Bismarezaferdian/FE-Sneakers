@@ -318,11 +318,11 @@ const Product = () => {
     }
   };
 
-  const toLocaleString = (time) =>
-    new Date(time).toLocaleString("en-US", {
-      timeZone: "Asia/Jakarta",
-      dateStyle: "long",
-    });
+  // const toLocaleString = (time) =>
+  //   new Date(time).toLocaleString("en-US", {
+  //     timeZone: "Asia/Jakarta",
+  //     dateStyle: "long",
+  //   });
 
   return (
     <Container>

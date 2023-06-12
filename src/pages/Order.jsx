@@ -5,11 +5,9 @@ import Navbar from "../components/Navbar";
 import { mobile } from "../responsive";
 import { useEffect, useState } from "react";
 import { fetchData } from "../useFetch";
-import { lightGreen } from "@mui/material/colors";
 import { formatRupiah } from "../utils/formatRupiah";
-import { Box, Button, Input, Modal, Typography } from "@mui/material";
+import { Box, Modal, Typography } from "@mui/material";
 import { getStatusMidtrans } from "../redux/apiCall";
-import { ContentCopy } from "@mui/icons-material";
 import CopyToClipboard from "react-copy-to-clipboard";
 
 const Container = styled.div`
@@ -107,11 +105,11 @@ const ProductColor = styled.div`
 
 const ProductSize = styled.span``;
 
-const ProductAmountContainer = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-`;
+// const ProductAmountContainer = styled.div`
+//   display: flex;
+//   align-items: center;
+//   margin-bottom: 20px;
+// `;
 
 export const Btn = styled.button`
   /* background-color: red; */
@@ -139,7 +137,6 @@ const ActionWrapp = styled.div`
 
 const ActionContent = styled.div``;
 
-const PaymentNow = styled.button``;
 const ButtonPayment = styled.button`
   width: 160px;
   /* padding: 10px; */
@@ -153,20 +150,20 @@ const ButtonPayment = styled.button`
   font-weight: 600;
   font-size: 16px;
 `;
-const AcceptOrder = styled.button`
-  width: 160px;
-  /* padding: 10px; */
-  background-color: #3330e4;
-  border: none;
-  color: white;
-  padding: 10px 0;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-weight: 600;
-  font-size: 16px;
-  white-space: nowrap;
-`;
+// const AcceptOrder = styled.button`
+//   width: 160px;
+//   /* padding: 10px; */
+//   background-color: #3330e4;
+//   border: none;
+//   color: white;
+//   padding: 10px 0;
+//   text-align: center;
+//   text-decoration: none;
+//   display: inline-block;
+//   font-weight: 600;
+//   font-size: 16px;
+//   white-space: nowrap;
+// `;
 
 const ProductStatus = styled.span`
   font-size: 18px;
@@ -206,9 +203,9 @@ const ProductPrice = styled.p`
   font-weight: 600;
 `;
 
-const BankInfo = styled.div`
-  display: flex;
-`;
+// const BankInfo = styled.div`
+//   display: flex;
+// `;
 
 const InputVa = styled.input`
   /* background-color: black; */
@@ -265,7 +262,6 @@ const Order = () => {
   }, []);
 
   const handlePending = async (orderId) => {
-    console.log(orderId);
     // e.preventDefault();
     try {
       const data = await getStatusMidtrans(orderId);
@@ -278,8 +274,6 @@ const Order = () => {
     setCopied(true);
     alert(`${statusMidtrans?.va_numbers[0]?.va_number} dicopy`);
   };
-
-  console.log(statusMidtrans);
 
   return (
     <Container>

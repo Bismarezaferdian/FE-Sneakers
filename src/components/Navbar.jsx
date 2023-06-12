@@ -19,15 +19,12 @@ import {
   AccountCircleRounded,
   ArrowRight,
   DensityLarge,
-  DensitySmall,
   Person,
   Receipt,
   Search,
   ShoppingCartOutlined,
 } from "@mui/icons-material";
-import AssignmentIcon from "@mui/icons-material/Assignment";
 import { Badge } from "@mui/material";
-import Sidebar from "./Sidebar";
 
 const Container = styled.nav`
   position: sticky;

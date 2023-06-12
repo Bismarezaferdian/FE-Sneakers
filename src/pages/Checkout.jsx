@@ -1,9 +1,4 @@
-import {
-  ContentCopy,
-  ExpandLess,
-  ExpandMore,
-  StarBorder,
-} from "@mui/icons-material";
+import { ContentCopy, ExpandLess, ExpandMore } from "@mui/icons-material";
 import {
   Collapse,
   FormControl,
@@ -12,7 +7,6 @@ import {
   ListItemButton,
   ListItemIcon,
   MenuItem,
-  Radio,
   Select,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -21,10 +15,8 @@ import Navbar from "../components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchData } from "../useFetch";
 import { formatRupiah } from "../utils/formatRupiah";
-import { AddOrder, deleteCart } from "../redux/apiCall";
-import { resetCart, resetState } from "../redux/cartRedux";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { deleteCart } from "../redux/apiCall";
+import { resetState } from "../redux/cartRedux";
 
 const Container = styled.div`
   /* background: gray; */
@@ -162,7 +154,6 @@ const FormWrapp = styled.div`
 `;
 
 const Checkout = () => {
-  const navigate = useNavigate();
   const [open, setOpen] = useState({});
   const cart = useSelector((state) => state?.cart);
   const { currentUser } = useSelector((state) => state?.user);
@@ -256,7 +247,6 @@ const Checkout = () => {
 
     try {
       const response = await fetchData.post(`/orders`, data);
-      console.log(response.data._id);
       const dataMidtrans = {
         transaction_details: {
           order_id: response.data._id,
