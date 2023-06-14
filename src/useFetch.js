@@ -1,7 +1,6 @@
 import axios from "axios";
 
 // const BASE_URL = process.env.REACT_APP_HOST;
-// const BASE_URL = "https://be-fashionshop-production.up.railway.app/api/v1";
 const BASE_URL = "https://be-fashionshop-production.up.railway.app/api/v1/";
 // const BASE_URL = "http://localhost:8000/api/v1/";
 

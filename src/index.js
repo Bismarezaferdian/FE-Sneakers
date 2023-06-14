@@ -1,13 +1,8 @@
 import React from "react";
-// import ReactDOM from "react-dom";
 import * as ReactDOM from "react-dom/client";
 import App from "./App";
 import "react-toastify/dist/ReactToastify.css";
-// import "swiper/css/bundle";
-// import "swiper/css";
-// import "swiper/css/pagination";
 import "swiper/swiper-bundle.css";
-// import "swiper/swiper.min.css";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { store, persistor } from "./redux/store";

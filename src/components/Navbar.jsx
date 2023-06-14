@@ -49,16 +49,16 @@ const Wrapper = styled.div`
 `;
 
 const BurgerIcon = styled(DensityLarge)`
-  color: #ffff;
-  cursor: pointer;
+  display: none;
+  ${tablet({ display: "flex", color: "#ffff", cursor: "pointer" })}
 `;
 
 const Left = styled.div`
   flex: 1;
   display: flex;
   align-items: center;
-  width: 100%;
-  ${tablet({ display: "none" })}
+
+  ${tablet({ display: "none", width: "100%" })}
 `;
 
 const Language = styled.span`
@@ -121,7 +121,7 @@ const TxtCart = styled.span`
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #333;
+  background-color: #444141;
   padding: 4px;
   border-radius: 4px;
   font-size: 14px;
@@ -225,7 +225,7 @@ const ButtonLink = styled.button`
 `;
 
 const Right = styled.div`
-  /* flex: 1; */
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -251,6 +251,7 @@ export const Name = styled.h1`
 `;
 
 const MenuItems = styled.div`
+  display: none;
   font-size: 14px;
   cursor: pointer;
   margin-left: 25px;
@@ -268,6 +269,18 @@ const MenuItems = styled.div`
   }
   ${tablet({ fontSize: "18px", marginLeft: "10px" })}
 `;
+
+const LoginWrapp = styled.div`
+  display: flex;
+  font-size: 14px;
+  cursor: pointer;
+  margin-left: 25px;
+  gap: 20px;
+  text-decoration: none;
+  color: #ffff;
+  white-space: nowrap;
+`;
+
 const OrderIconWrapp = styled.div`
   font-size: 14px;
   cursor: pointer;
@@ -510,9 +523,9 @@ const Navbar = ({ order, togle }) => {
         ) : (
           <>
             <Link to={"/login"}>
-              <MenuItems>
+              <LoginWrapp>
                 <Person />
-              </MenuItems>
+              </LoginWrapp>
             </Link>
           </>
         )}
