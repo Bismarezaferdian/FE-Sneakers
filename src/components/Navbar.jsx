@@ -267,7 +267,7 @@ const MenuItems = styled.div`
     color: white;
     text-decoration: none;
   }
-  ${tablet({ fontSize: "18px", marginLeft: "10px" })}
+  ${tablet({ display: "flex", fontSize: "18px", marginLeft: "10px" })}
 `;
 
 const LoginWrapp = styled.div`

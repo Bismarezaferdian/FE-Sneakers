@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCart, getOrder } from "../redux/apiCall";
 import { tablet } from "../responsive";
 import Sidebar from "../components/Sidebar";
+import BottomBanner from "./BottomBanner";
 
 // export const Countainer = styled.div`
 //   display: flex;
@@ -61,7 +62,8 @@ const Home = () => {
       <Title>New Arrival</Title>
       <NewArrival />
       <Categories />
-      <Vidios />
+      <BottomBanner />
+      {/* <Vidios /> */}
       <RellsProducts />
       <Newsletter />
       <Footer />
