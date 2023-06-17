@@ -73,7 +73,7 @@ const RellsProducts = () => {
       </WrappTitle>
       <SlideWrapp>
         <Swiper
-          slidesPerView={4.5}
+          slidesPerView={window.innerWidth < 760 ? 2.5 : 4.5}
           spaceBetween={30}
           loop={false}
           navigation={true}

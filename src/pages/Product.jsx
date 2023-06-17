@@ -5,18 +5,18 @@ import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
 import Newsletter from "../components/Newsletter";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from "swiper";
 import { addToCart } from "../redux/cartRedux";
-import { mobile, tablet } from "../responsive";
+import { tablet } from "../responsive";
 import { fetchData } from "../useFetch";
 import Sliders from "../components/Slider";
 import { updatecart } from "../redux/apiCall";
 import { Add, Remove } from "@mui/icons-material";
 import { errorMessage } from "../utils/Toastify";
 import { ToastContainer } from "react-toastify";
+import { formatRupiah } from "../utils/formatRupiah";
 
 const Container = styled.div``;
 
@@ -54,17 +54,21 @@ const InfoContainer = styled.div`
   ${tablet({ padding: "10px" })}
 `;
 
-const Title = styled.h1`
+const Title = styled.p`
   font-weight: 200;
+  font-size: 28px;
+  ${tablet({ fontSize: "24px", fontWeight: "500" })}
 `;
 
 const Desc = styled.p`
   margin: 20px 0px;
+  ${tablet({ fontSize: "16px", fontWeight: "200" })}
 `;
 
 const Price = styled.span`
   font-weight: 100;
   font-size: 40px;
+  ${tablet({ fontSize: "18px", fontWeight: "400", color: "#5d697a" })}
 `;
 
 const FilterContainer = styled.div`
@@ -74,7 +78,7 @@ const FilterContainer = styled.div`
   flex-direction: column;
   gap: 20px;
   justify-content: space-between;
-  ${mobile({ width: "100%" })}
+  ${tablet({ width: "100%" })}
 `;
 
 const Filter = styled.div`
@@ -160,13 +164,16 @@ const Amount = styled.span`
 
 const Button = styled.button`
   padding: 15px;
-  border: 2px solid teal;
-  background-color: white;
+  /* border: 2px solid teal; */
+  background-color: #3330e4;
+  border: none;
+  border-radius: 4px;
+  color: #ffff;
   cursor: pointer;
   font-weight: 500;
 
   &:hover {
-    background-color: #f8f4f4;
+    background-color: #1a1879;
   }
 `;
 
@@ -318,16 +325,22 @@ const Product = () => {
     }
   };
 
-  // const toLocaleString = (time) =>
-  //   new Date(time).toLocaleString("en-US", {
+  // //2023-01-26T09:06:31.343Z
+  // // " 25 September, 2021"
+
+  // console.log(product.createdAt);
+
+  // const getTime = (time) =>
+  //   new Date(time).toLocaleString("id-ID", {
   //     timeZone: "Asia/Jakarta",
   //     dateStyle: "long",
   //   });
 
+  // console.log(getTime(product.createdAt));
+
   return (
     <Container>
       <ToastContainer />
-      <Navbar />
       <Announcement />
       <Wrapper>
         <ImgContainer>
@@ -350,7 +363,7 @@ const Product = () => {
           <Title>{product.title}</Title>
           {/* <Title>{toLocaleString(product.createdAt)}</Title> */}
           <Desc>{product.desc}</Desc>
-          <Price>{product.price}</Price>
+          <Price>{formatRupiah(product.price)}</Price>
 
           <FilterContainer>
             <Filter>

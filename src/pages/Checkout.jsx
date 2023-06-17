@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import Navbar from "../components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchData } from "../useFetch";
 import { formatRupiah } from "../utils/formatRupiah";
@@ -291,8 +290,7 @@ const Checkout = () => {
   };
 
   return (
-    <div>
-      <Navbar />
+    <>
       <Container>
         <ContentWrapp>
           <h1>checkout page</h1>
@@ -527,7 +525,7 @@ const Checkout = () => {
           </AmountWrapp>
         </ContentWrapp>
       </Container>
-    </div>
+    </>
   );
 };
 

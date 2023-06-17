@@ -169,3 +169,11 @@ export const {
   resetState,
 } = cartSlice.actions;
 export default cartSlice.reducer;
+
+// const getTime = (time) =>
+//     new Date(time).toLocaleString("id-ID", {
+//       timeZone: "Asia/Jakarta",
+//       dateStyle: "long",
+//     });
+
+//   console.log(getTime(product.createdAt));

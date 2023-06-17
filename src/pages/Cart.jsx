@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
 import { deleteProductCart, updatecart } from "../redux/apiCall";
 import { addQty, removeQty } from "../redux/cartRedux";
 import { mobile, tablet } from "../responsive";
@@ -84,7 +83,12 @@ const ProductDetail = styled.div`
   flex: 2;
   display: flex;
   padding: 10px;
-  ${tablet({ flexDirection: "column", justifyContent: "center", flex: "1" })};
+  ${tablet({
+    flexDirection: "column",
+    justifyContent: "center",
+    flex: "1",
+    padding: "0px",
+  })};
 `;
 
 const Image = styled.img`
@@ -96,6 +100,7 @@ const Details = styled.div`
   flex-direction: column;
   justify-content: space-around;
   padding: 20px;
+
   ${tablet({ padding: "10px" })}
 `;
 
@@ -118,6 +123,10 @@ const PriceDetail = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  ${tablet({
+    alignItems: "start",
+    marginLeft: "10px",
+  })}/* background-color: red; */
 `;
 
 const ProductAmountContainer = styled.div`
@@ -136,11 +145,17 @@ const ProductAmount = styled.div`
   ${mobile({ margin: "5px 15px" })}
 `;
 
-const ProductPrice = styled.div`
+const ProductPrice = styled.p`
   font-size: 30px;
   font-weight: 200;
+  font-size: 2rem;
   color: #404b69;
-  ${mobile({ marginBottom: "20px" })};
+  ${tablet({
+    marginTop: "20px",
+    fontSize: "1rem",
+    fontWeight: "600",
+    color: "#5d697a",
+  })};
 `;
 
 const Hr = styled.hr`
@@ -156,6 +171,7 @@ const Summary = styled.div`
   padding: 20px;
   height: 50vh;
   background-color: #f7f7f7;
+  ${tablet({ marginTop: "10px" })}
 `;
 
 const SummaryTitle = styled.h1`
@@ -182,6 +198,7 @@ const Button = styled.button`
   /* padding: 10px; */
   background-color: #3330e4;
   border: none;
+  border-radius: 4px;
   color: white;
   padding: 15px 32px;
   text-align: center;
@@ -241,7 +258,6 @@ const Cart = () => {
   return (
     <Container>
       <ToastContainer />
-      <Navbar />
       <Announcement />
       <Wrapper>
         <Title>YOUR BAG</Title>
@@ -279,10 +295,18 @@ const Cart = () => {
                     <ProductSize>
                       <p>berat:{item.weight}</p>
                     </ProductSize>
+                    <ProductPrice>{formatRupiah(item.price)}</ProductPrice>
                   </Details>
                 </ProductDetail>
                 <PriceDetail>
                   <ProductAmountContainer>
+                    <Btn
+                      disabled={isFetch ? true : false}
+                      onClick={() => handleQty(item, "minus")}
+                    >
+                      {item.quantity === 1 ? "delete" : <Remove />}
+                    </Btn>
+                    <ProductAmount>{item.quantity}</ProductAmount>
                     <Btn
                       disabled={isFetch ? true : false}
                       id="plus"
@@ -290,15 +314,7 @@ const Cart = () => {
                     >
                       <Add />
                     </Btn>
-                    <ProductAmount>{item.quantity}</ProductAmount>
-                    <Btn
-                      disabled={isFetch ? true : false}
-                      onClick={() => handleQty(item, "minus")}
-                    >
-                      {item.quantity === 1 ? "delete" : <Remove />}
-                    </Btn>
                   </ProductAmountContainer>
-                  <ProductPrice>{formatRupiah(item.price)}</ProductPrice>
                 </PriceDetail>
               </Product>
             ))}

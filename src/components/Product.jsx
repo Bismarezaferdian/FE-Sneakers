@@ -51,7 +51,7 @@ export const Title = styled.p`
   font-weight: 600;
   align-items: center;
   letter-spacing: 2px;
-  ${tablet({ textAlign: "center" })}
+  ${tablet({ fontSize: "12px", textAlign: "center", fontWeight: "400" })}
 `;
 
 export const Price = styled.p`
@@ -59,6 +59,7 @@ export const Price = styled.p`
   letter-spacing: 2px;
   font-weight: 500;
   color: #5d697a;
+  ${tablet({ fontSize: "10px" })}
 `;
 
 const Circle = styled.div`

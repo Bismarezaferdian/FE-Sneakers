@@ -1,19 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
-import Announcement from "../components/Announcement";
+// import Announcement from "../components/Announcement";
 import Categories from "../components/Categories";
 import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
 import Newsletter from "../components/Newsletter";
-import Vidios from "../components/Vidios";
+// import Vidios from "../components/Vidios";
 import Banner from "./Banner";
 import NewArrival from "./NewArrival";
 import RellsProducts from "./RellsProducts";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { getCart, getOrder } from "../redux/apiCall";
+import { getCart, getOrder, getProducts } from "../redux/apiCall";
 import { tablet } from "../responsive";
-import Sidebar from "../components/Sidebar";
 import BottomBanner from "./BottomBanner";
 
 // export const Countainer = styled.div`
@@ -38,26 +36,24 @@ export const Title = styled.p`
   ${tablet({ fontSize: "18px", margin: "10px 10px 0 10px " })}
 `;
 
-const Home = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const Home = ({ togle, isOpen }) => {
+  // const [isOpen, setIsOpen] = useState(false);
   const userId = useSelector((state) => state.user.currentUser?._id);
   const dispatch = useDispatch();
 
   useEffect(() => {
     getCart(userId, dispatch);
     getOrder(dispatch);
+    getProducts(dispatch);
   }, [userId, dispatch]);
 
-  const togle = () => {
-    setIsOpen(!isOpen);
-  };
+  // const togle = () => {
+  //   setIsOpen(!isOpen);
+  // };
 
   return (
     <>
       <ToastContainer />
-      <Sidebar togle={togle} isOpen={isOpen} />
-      <Announcement />
-      <Navbar togle={togle} />
       <Banner />
       <Title>New Arrival</Title>
       <NewArrival />

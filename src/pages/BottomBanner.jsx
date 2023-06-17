@@ -1,16 +1,13 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { SwiperSlide } from "swiper/react";
-import Sliders from "../components/Slider";
-import Swiper, { Navigation, Pagination } from "swiper";
 import { tablet } from "../responsive";
 
 const BottomBannerContainer = styled.div`
   height: 80vh;
   max-width: 100vw;
   padding: 10px;
-  /* background-color: aliceblue; */
+  ${tablet({ height: "50vh" })}/* background-color: aliceblue; */
 `;
 const BottomBannerWrapp = styled.div`
   display: flex;
@@ -30,25 +27,41 @@ const BottomBannerContent = styled.div`
 
 const ContentImgWrapp = styled.div`
   display: flex;
-  /* align-items: center; */
-  /* justify-content: flex-end; */
+  align-items: center;
+  justify-content: center;
 `;
 
 const ContentImg = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
+  ${tablet({
+    width: "70%",
+    height: "70%",
+  })}
 `;
 
 const BottomBannerContentSecond = styled.div`
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 10px;
+`;
+
+const TxtBannerTitle = styled.p`
+  font-size: 18px;
+  font-weight: 600;
+`;
+const TxtBannerDesc = styled.p`
+  font-size: 12px;
+  color: #5d697a;
 `;
 
 const BottomBanner = () => {
   const { products } = useSelector((state) => state.product);
-  const imgUrl = products[5].imgDisplay.imgUrl;
+  const imgUrl = products[9]?.imgDisplay.imgUrl;
 
-  console.log(products);
   return (
     <BottomBannerContainer>
       <BottomBannerWrapp>
@@ -58,9 +71,9 @@ const BottomBanner = () => {
           </ContentImgWrapp>
         </BottomBannerContent>
         <BottomBannerContentSecond>
-          <h1>{products[5].title}</h1>
+          <TxtBannerTitle>{products[9]?.title}</TxtBannerTitle>
           {""}
-          <p>{products[5].desc}</p>
+          <TxtBannerDesc>{products[9]?.desc}</TxtBannerDesc>
         </BottomBannerContentSecond>
       </BottomBannerWrapp>
     </BottomBannerContainer>

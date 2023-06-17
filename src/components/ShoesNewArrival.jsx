@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Skeleton } from "@mui/material";
 import { SearchOutlined } from "@mui/icons-material";
 import { formatRupiah } from "../utils/formatRupiah";
+import { tablet } from "../responsive";
 // import { Skeleton } from "@material-ui/";
 
 const Info = styled.div`
@@ -42,7 +43,7 @@ export const Container = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;
-  align-items: center;
+  /* align-items: center; */
   /* padding: 16px; */
   overflow: hidden;
   text-decoration: none;
@@ -69,15 +70,20 @@ export const Title = styled.p`
   text-transform: uppercase;
   font-weight: 600;
   align-items: center;
+  text-align: start;
   letter-spacing: 2px;
   color: #000000;
+  ${tablet({ fontSize: "12px", fontWeight: "400" })}
 `;
 
 export const Price = styled.p`
   font-size: 14px;
   letter-spacing: 2px;
+  text-align: start;
+  align-self: start;
   font-weight: 500;
   color: #5d697a;
+  ${tablet({ fontSize: "10px" })}
 `;
 function ProductNewArrival({ loading, item }) {
   return (

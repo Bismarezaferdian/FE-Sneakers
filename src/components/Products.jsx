@@ -4,12 +4,14 @@ import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { getProducts } from "../redux/apiCall";
 import Product from "./Product";
+import { tablet } from "../responsive";
 
 const Container = styled.div`
   padding: 20px;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  ${tablet({ padding: "10px" })}
 `;
 
 const Products = ({ cat, filters, sort }) => {
@@ -20,6 +22,8 @@ const Products = ({ cat, filters, sort }) => {
   const state = products.state?.productFilters;
   const [productFilter, setProductFilter] = useState();
   const allProduct = useSelector((state) => state.product.products);
+  // const loading = useSelector((state) => state.product);
+  // console.log(loading);
   //product filter yang di ambil dari filter pathname / navlink
   const [product, setProduct] = useState(allProduct);
   const dispatch = useDispatch();
@@ -49,12 +53,14 @@ const Products = ({ cat, filters, sort }) => {
   //   );
   // }, [allProduct, filters, productFilters]);
 
+  // console.log(state);
+
   useEffect(() => {
     if (state) {
       if (sort === "newest") {
         setProductFilter((prev) =>
           [...prev].sort(
-            (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
           )
         );
       } else if (sort === "asc") {
@@ -77,6 +83,7 @@ const Products = ({ cat, filters, sort }) => {
     }
   }, [sort, state, allProduct]);
 
+  console.log(productFilter);
   return (
     <Container>
       {productFilter?.length > 0

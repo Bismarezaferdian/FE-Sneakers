@@ -1,13 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { revertAll } from "./action";
 
+const initialState = {
+  products: [],
+  // productFilters: [],
+  isFetching: false,
+  error: false,
+};
 const productSlice = createSlice({
   name: "product",
-  initialState: {
-    products: [],
-    // productFilters: [],
-    isFething: false,
-    error: false,
-  },
+  initialState,
+  extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
 
   reducers: {
     addToProduct: (state, action) => {
@@ -17,16 +20,16 @@ const productSlice = createSlice({
       state.productFilters = action.payload;
     },
     getProductStart: (state) => {
-      state.isFething = true;
+      state.isFetching = true;
       state.error = false;
     },
     getProductSucces: (state, action) => {
-      state.isFething = false;
+      state.isFetching = false;
       state.error = false;
       state.products = action.payload;
     },
     // getProductFilter: (state, action) => {
-    //   state.isFething = false;
+    //   state.isFetching = false;
     //   state.error = false;
     //   if (action.payload.length <= 0) {
     //     state.productFilters = [];
@@ -35,7 +38,7 @@ const productSlice = createSlice({
     // },
 
     getProductFailure: (state) => {
-      state.isFething = false;
+      state.isFetching = false;
       state.error = true;
     },
   },

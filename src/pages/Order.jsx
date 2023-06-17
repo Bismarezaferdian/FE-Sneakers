@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
 import { mobile } from "../responsive";
 import { useEffect, useState } from "react";
 import { fetchData } from "../useFetch";
@@ -9,9 +8,11 @@ import { formatRupiah } from "../utils/formatRupiah";
 import { Box, Modal, Typography } from "@mui/material";
 import { getStatusMidtrans } from "../redux/apiCall";
 import CopyToClipboard from "react-copy-to-clipboard";
+import { tablet } from "../responsive";
 
 const Container = styled.div`
   background-color: #f5f5f5;
+  overflow: hidden;
 `;
 
 const Wrapper = styled.div`
@@ -23,24 +24,24 @@ const WrappOrder = styled.div`
   flex: 3;
 `;
 
-const WrappNavbarOrder = styled.div`
-  display: flex;
-  justify-content: space-between;
-  /* border: 1px solid #000000; */
-  width: 100%;
-`;
-const NavTextOrder = styled.div`
-  width: 100%;
-  border: 1px solid #000000;
-  text-align: center;
-  padding: 14px;
-`;
+// const WrappNavbarOrder = styled.div`
+//   display: flex;
+//   justify-content: space-between;
+//   /* border: 1px solid #000000; */
+//   width: 100%;
+// `;
+// const NavTextOrder = styled.div`
+//   width: 100%;
+//   border: 1px solid #000000;
+//   text-align: center;
+//   padding: 14px;
+// `;
 
-const TextOrder = styled.p`
-  font-size: 18px;
-  font-weight: 600;
-  white-space: nowrap;
-`;
+// const TextOrder = styled.p`
+//   font-size: 18px;
+//   font-weight: 600;
+//   white-space: nowrap;
+// `;
 
 const ContentOrder = styled.div`
   background-color: #ffff;
@@ -71,12 +72,14 @@ const ProductContent = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  ${tablet({ flexDirection: "column", alignItems: "start " })}
 `;
 
 const ProductDetail = styled.div`
   /* flex: 2; */
   display: flex;
   padding: 10px;
+  ${tablet({ justifyContent: "space-between", padding: "0px" })}
 `;
 
 const Image = styled.img`
@@ -132,7 +135,10 @@ const ActionWrapp = styled.div`
   padding: 10px;
   align-items: end;
   background-color: #fffefb;
-  /* border-bottom: 2px solid black; */
+  ${tablet({
+    alignItems: "start",
+    padding: "10px 0",
+  })}/* border-bottom: 2px solid black; */
 `;
 
 const ActionContent = styled.div``;
@@ -277,7 +283,7 @@ const Order = () => {
 
   return (
     <Container>
-      <Navbar order={order} />
+      {/* <Navbar order={order} /> */}
       <Announcement />
       <Wrapper>
         <Modal
@@ -320,7 +326,7 @@ const Order = () => {
           </Box>
         </Modal>
         <WrappOrder>
-          <WrappNavbarOrder>
+          {/* <WrappNavbarOrder>
             <NavTextOrder>
               <TextOrder>Semua</TextOrder>
             </NavTextOrder>
@@ -336,7 +342,7 @@ const Order = () => {
             <NavTextOrder>
               <TextOrder>Dibatal</TextOrder>
             </NavTextOrder>
-          </WrappNavbarOrder>
+          </WrappNavbarOrder> */}
           {order?.map((item, i) => (
             <ContentOrder key={i}>
               <Product>
@@ -377,6 +383,7 @@ const Order = () => {
                   {" "}
                   Total Pesanan :{formatRupiah(item.total)}
                 </ProductPrice>
+                sudah termasuk pajak & biaya ongkir
                 <ActionContent>
                   {item.status === "settlement" && (
                     <ButtonPayment>Terima Pesanan</ButtonPayment>

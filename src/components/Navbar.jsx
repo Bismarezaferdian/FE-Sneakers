@@ -320,7 +320,7 @@ const CartIconWrapp = styled.div`
 //   font-size: 22px;
 // `;
 
-const Navbar = ({ order, togle }) => {
+const Navbar = ({ togle, isOpen }) => {
   const [sortProduct, setSortProduct] = useState("");
   const [productFilters, setProductfilters] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -367,7 +367,6 @@ const Navbar = ({ order, togle }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  // console.log(togle);
 
   return (
     <Container>
