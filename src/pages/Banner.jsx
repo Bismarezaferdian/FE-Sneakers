@@ -12,6 +12,7 @@ export const Container = styled.div`
   max-height: 60vh;
   /* width: 100%; */
   position: relative;
+  background-color: #fcfdfd;
   overflow: hidden;
   ${tablet({ padding: "0" })}
 `;

@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 import { revertAll } from "./action";
 
 const initialState = {
-  orders: [],
+  userId: null,
+  products: [],
   error: false,
   isFetching: false,
 };
@@ -14,15 +15,26 @@ const orderSlice = createSlice({
   reducers: {
     resetState: () => initialState,
 
-    getOrderStart: (state) => {
+    orderStart: (state) => {
       state.error = false;
       state.isFetching = true;
     },
-    getOrderSuccess: (state, action) => {
+    addToOrderRedux: (state, { payload }) => {
       state.isFetching = false;
       state.error = false;
-      state.orders = action.payload;
+      state.userId = payload.userId;
+      state.products = payload.products;
     },
+    orderSuccess: (state) => {
+      state.isFetching = false;
+      state.error = false;
+    },
+    updateOrder: (state, { payload }) => {
+      state.isFetching = false;
+      state.error = false;
+      state.products = payload;
+    },
+
     getOrderFailure: (state) => {
       state.isFetching = false;
       state.error = true;
@@ -30,7 +42,13 @@ const orderSlice = createSlice({
   },
 });
 
-export const { resetState, getOrderStart, getOrderSuccess, getOrderFailure } =
-  orderSlice.actions;
+export const {
+  resetState,
+  orderStart,
+  orderSuccess,
+  addToOrderRedux,
+  updateOrder,
+  getOrderFailure,
+} = orderSlice.actions;
 
 export default orderSlice.reducer;

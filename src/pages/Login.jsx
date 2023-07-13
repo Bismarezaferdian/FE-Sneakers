@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import styled from "styled-components";
 import { login } from "../redux/apiCall";
 import GoogleIcon from "@mui/icons-material/Google";
 import { mobile, tablet } from "../responsive";
-import Navbar from "../components/Navbar";
+import { Link, useNavigate } from "react-router-dom";
 import { FacebookOutlined } from "@mui/icons-material";
+import { Backdrop, CircularProgress } from "@mui/material";
+import { ToastContainer } from "react-toastify";
 
 const Container = styled.div`
   width: 100vw;
@@ -42,10 +44,10 @@ const Wrapper = styled.div`
   ${tablet({ width: "75%" })}
 `;
 
-const Title = styled.h1`
+const Title = styled.p`
   font-size: 24px;
   /* font-weight: 600; */
-  color: #3330e4;
+  /* color: #3330e4; */
 `;
 
 const Form = styled.form`
@@ -73,20 +75,22 @@ const Button = styled.button`
   border-radius: 4px;
 `;
 
-const Link = styled.a`
+const Links = styled.p`
   margin: 5px 0px;
   font-size: 12px;
   text-decoration: underline;
   align-self: flex-end;
   cursor: pointer;
 `;
-const SecondLink = styled.a`
+const SecondLink = styled.p`
   margin: 5px 0px;
   font-size: 12px;
-  text-decoration: underline;
+  /* text-decoration: underline; */
   align-self: center;
   cursor: pointer;
 `;
+
+const Singup = styled(Link)``;
 
 const Buttom = styled.div`
   display: flex;
@@ -107,11 +111,19 @@ const Facebook = styled.button`
   border: none;
 `;
 
+const Span = styled.span`
+  font-size: 12px;
+  color: red;
+`;
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  // const { isFetching, error } = useSelector((state) => state.user);
+  const { isFetching, error, massageError } = useSelector(
+    (state) => state.user
+  );
+  // const isFetching = false;
 
   const handleClick = (e) => {
     e.preventDefault();
@@ -119,14 +131,24 @@ const Login = () => {
     // const res = await fetchData.post("/auth/login", { email, password });
     // console.log(res.data);
   };
-  // console.log(email, password);
+  console.log(isFetching);
 
   return (
     <Container>
+      <ToastContainer />
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isFetching}
+        // onClick={handleClose}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Top>
-        <Title>sneakers</Title>
+        <Title>welcome back !</Title>
       </Top>
+
       <Wrapper>
+        {error && <Span>{massageError}</Span>}
         <Form>
           <Input
             placeholder="username"
@@ -136,9 +158,11 @@ const Login = () => {
             placeholder="password"
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Link>Forgot password?</Link>
+          <Links>Forgot password?</Links>
           <Button onClick={handleClick}>LOGIN</Button>
-          <SecondLink>Dont have account?signUp</SecondLink>
+          <SecondLink>
+            Dont have account?<Singup to={"/register"}>signUp</Singup>
+          </SecondLink>
         </Form>
       </Wrapper>
       <Buttom>

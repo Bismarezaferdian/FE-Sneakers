@@ -1,11 +1,8 @@
-import { ContentCopy, ExpandLess, ExpandMore } from "@mui/icons-material";
 import {
-  Collapse,
+  Backdrop,
+  CircularProgress,
   FormControl,
   InputLabel,
-  List,
-  ListItemButton,
-  ListItemIcon,
   MenuItem,
   Select,
 } from "@mui/material";
@@ -16,6 +13,7 @@ import { fetchData } from "../useFetch";
 import { formatRupiah } from "../utils/formatRupiah";
 import { deleteCart } from "../redux/apiCall";
 import { resetState } from "../redux/cartRedux";
+import { addToOrderRedux, orderStart, orderSuccess } from "../redux/orderRedux";
 
 const Container = styled.div`
   /* background: gray; */
@@ -38,8 +36,8 @@ const Wrapp = styled.div`
 const SubTitle = styled.p`
   padding-top: 40px;
   font-size: 22px;
-  font-weight: 600;
-  color: #bbbbbb;
+  font-weight: 300;
+  color: #000000;
 `;
 const Name = styled.p`
   font-size: 18px;
@@ -105,21 +103,21 @@ const Text = styled.p`
   opacity: 0.5;
 `;
 const CourirPrice = styled.div``;
-const PaymentInfo = styled.div`
-  border-bottom: 0.5px solid #bbbbbb;
-`;
-const PaymentWrapp = styled.div`
-  max-width: 500px;
-`;
-const BankInfo = styled.div`
-  display: flex;
-  gap: 20px;
-  /* background: #bfdb38; */
-  justify-content: space-between;
-`;
-const TextBank = styled.p`
-  /* color: white; */
-`;
+// const PaymentInfo = styled.div`
+//   border-bottom: 0.5px solid #bbbbbb;
+// `;
+// const PaymentWrapp = styled.div`
+//   max-width: 500px;
+// `;
+// const BankInfo = styled.div`
+//   display: flex;
+//   gap: 20px;
+//   /* background: #bfdb38; */
+//   justify-content: space-between;
+// `;
+// const TextBank = styled.p`
+//   /* color: white; */
+// `;
 
 const AmountWrapp = styled.div`
   margin-top: 10px;
@@ -153,8 +151,11 @@ const FormWrapp = styled.div`
 `;
 
 const Checkout = () => {
-  const [open, setOpen] = useState({});
+  // const [open, setOpen] = useState({});
   const cart = useSelector((state) => state?.cart);
+  const { _id, products, total, weight, isFetch } = useSelector(
+    (state) => state?.cart
+  );
   const { currentUser } = useSelector((state) => state?.user);
   const [province, setProvince] = useState([]);
   const [city, setCity] = useState([]);
@@ -167,13 +168,14 @@ const Checkout = () => {
   });
   const [validation, setValidation] = useState(false);
   const dispatch = useDispatch();
+  const userId = currentUser._id;
 
-  const pajak = cart.total * 0.11;
+  const pajak = total * 0.11;
   const subTotal = cart?.total + pajak + select.costs?.cost[0]?.value;
 
-  const handleToggle = (index) => {
-    setOpen((prevOpen) => ({ ...prevOpen, [index]: !prevOpen[index] }));
-  };
+  // const handleToggle = (index) => {
+  //   setOpen((prevOpen) => ({ ...prevOpen, [index]: !prevOpen[index] }));
+  // };
 
   useEffect(() => {
     const getProvince = async () => {
@@ -193,13 +195,13 @@ const Checkout = () => {
     }
   }, [select.provinceId]);
 
-  console.log(cart);
+  // console.log(cart);
   useEffect(() => {
     const getCost = async () => {
       const res = await fetchData.post("/cekOngkir/cost", {
         origin: "151",
         destination: select.cityId,
-        weight: cart.weight,
+        weight: weight,
         courier: select.courier,
       });
       // const data = res.data;
@@ -208,7 +210,7 @@ const Checkout = () => {
     if (select.cityId && select.courier !== "") {
       getCost();
     }
-  }, [select.cityId, select.courier, cart.weight]);
+  }, [select.cityId, select.courier, weight]);
 
   const handleSelect = (e) => {
     setSelect((prev) => ({
@@ -226,29 +228,39 @@ const Checkout = () => {
   // console.log(parseInt(subTotal.toFixed(0)));
 
   const handleSubmit = async () => {
-    if (!cart.products || !select.costs || !select.costs.service) {
+    if (!products || !select.costs || !select.costs.service) {
       runValidation();
     }
+    const idOrder = new Date().getTime();
 
     const data = {
-      userId: cart.userId,
-      products: cart.products,
-      pengiriman: {
-        jasaKirim: select.courier,
-        service: select.costs.service,
-        Weight: cart.weight,
+      userId: userId,
+      //semua di input di product kecuali userid
+      products: {
+        product: products,
+        pengiriman: {
+          jasaKirim: select.courier,
+          service: select.costs.service,
+          Weight: weight,
+        },
+        idOrderMidtrans: idOrder,
+        pajak: pajak,
+        status: "pending",
+        total: subTotal,
+        address: currentUser.address,
       },
-      pajak: pajak,
-      status: "pending",
-      total: subTotal,
-      address: currentUser.address,
     };
 
     try {
-      const response = await fetchData.post(`/orders`, data);
+      dispatch(orderStart());
+      await fetchData.post(`/orders`, data);
+      // const lastPost = response[products.length - 1];
+      // console.log(lastPost);
       const dataMidtrans = {
         transaction_details: {
-          order_id: response.data._id,
+          //orderid midtrans sama dengen _id order
+          //error karna orderId selalu sama
+          order_id: idOrder,
           gross_amount: parseInt(subTotal.toFixed(0)),
         },
 
@@ -260,38 +272,31 @@ const Checkout = () => {
         },
       };
 
+      // console.log(dataMidtrans);
+
       const res = await fetchData.post("/midtrans/transaction", dataMidtrans);
-      deleteCart(cart._id);
+      // console.log(res);
+      addToOrderRedux(userId, dispatch);
+      deleteCart(_id);
       dispatch(resetState());
-      window.location.assign(res.data.redirect_url);
+      dispatch(orderSuccess());
+      window.open(res.data.redirect_url, "_blank");
+      // window.location.assign(res.data.redirect_url);
     } catch (error) {
       console.log(error);
     }
-
-    // AddOrder(data);
-
-    // const dataMidtrans = {
-    //   transaction_details: {
-    //     order_id: `sneakersku-${orderID}`,
-    //     gross_amount: subTotal,
-    //   },
-
-    //   customer_details: {
-    //     first_name: currentUser.firstname,
-    //     last_name: currentUser.lastname,
-    //     email: currentUser.email,
-    //     phone: currentUser.phonenumber,
-    //   },
-    // };
-
-    // const res = await fetchData.post("/midtrans/transaction", dataMidtrans);
-    // console.log(res.data);
-    // window.location.assign(res.data.redirect_url);
   };
 
   return (
     <>
       <Container>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={isFetch}
+          // onClick={handleClose}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <ContentWrapp>
           <h1>checkout page</h1>
           <Wrapp>
@@ -307,7 +312,7 @@ const Checkout = () => {
           </Wrapp>
           <ProductWrapp>
             <SubTitle>Product Detail</SubTitle>
-            {cart.products.map((item, index) => (
+            {products.map((item, index) => (
               <Content key={index}>
                 <ProductImg>
                   <Img src={item.imgDisplay} />
@@ -430,7 +435,7 @@ const Checkout = () => {
             <CourirPrice>
               <Text>
                 {" "}
-                <Span>Total Berat : </Span> {cart.weight} g
+                <Span>Total Berat : </Span> {weight} g
               </Text>
               <Text>
                 {" "}
@@ -440,7 +445,7 @@ const Checkout = () => {
             </CourirPrice>
             <Span>Estimasi day {select.costs?.cost[0]?.etd} days</Span>
           </Wrapp>
-          <PaymentInfo>
+          {/* <PaymentInfo>
             <SubTitle>Metode Payment</SubTitle>
             <PaymentWrapp>
               <ListItemButton onClick={() => handleToggle(1)}>
@@ -490,18 +495,17 @@ const Checkout = () => {
                         <ContentCopy />
                       </BankInfo>
                     </ListItemIcon>
-                    {/* <ListItemText primary="Starred" /> */}
                   </ListItemButton>
                 </List>
               </Collapse>
             </PaymentWrapp>
-          </PaymentInfo>
+          </PaymentInfo> */}
           <AmountWrapp>
             <AmountContent>
               <AmountText>
                 {" "}
                 <Span>Subtotal untuk Product:</Span>
-                {formatRupiah(cart.total)}
+                {formatRupiah(total)}
               </AmountText>
               <AmountText>
                 <Text>
@@ -513,8 +517,8 @@ const Checkout = () => {
               <AmountText>
                 <Text>
                   <Span>Total pembayaran:</Span>Rp.
-                  {select.costs && cart.total
-                    ? // ? formatRupiah(cart.total + select.costs?.cost[0]?.value)
+                  {select.costs && total
+                    ? // ? formatRupiah(total + select.costs?.cost[0]?.value)
                       formatRupiah(subTotal)
                     : ""}
                 </Text>

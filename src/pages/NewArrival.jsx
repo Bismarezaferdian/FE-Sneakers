@@ -11,6 +11,9 @@ import ClotesNewArrival from "../components/ClotesNewArrival";
 export const Container = styled.div`
   display: grid;
   justify-content: center;
+  /* background-color: #fcfdfd; */
+  /* max-width: 1080px; */
+  /* background-color: red; */
 `;
 
 export const SlideWrapp = styled.div`

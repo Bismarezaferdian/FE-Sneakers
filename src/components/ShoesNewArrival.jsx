@@ -66,13 +66,13 @@ export const Image = styled.img`
 `;
 
 export const Title = styled.p`
-  font-size: 14px;
-  text-transform: uppercase;
+  font-size: 16px;
+  text-transform: capitalize;
   font-weight: 600;
   align-items: center;
   text-align: start;
   letter-spacing: 2px;
-  color: #000000;
+  color: #34364a;
   ${tablet({ fontSize: "12px", fontWeight: "400" })}
 `;
 

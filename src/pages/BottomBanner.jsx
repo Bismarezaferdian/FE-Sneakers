@@ -7,6 +7,7 @@ const BottomBannerContainer = styled.div`
   height: 80vh;
   max-width: 100vw;
   padding: 10px;
+  background-color: #fcfdfd;
   ${tablet({ height: "50vh" })}/* background-color: aliceblue; */
 `;
 const BottomBannerWrapp = styled.div`
@@ -50,12 +51,17 @@ const BottomBannerContentSecond = styled.div`
 `;
 
 const TxtBannerTitle = styled.p`
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 48px;
+  color: #34364a;
+  text-transform: capitalize;
+  ${tablet({ fontSize: "18px" })}
 `;
 const TxtBannerDesc = styled.p`
-  font-size: 12px;
+  font-size: 18px;
   color: #5d697a;
+  ${tablet({ fontSize: "12px" })}
 `;
 
 const BottomBanner = () => {

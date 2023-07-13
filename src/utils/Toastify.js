@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 
-export const successMessage = (message) => {
+export const successMessage = (message, onClose) => {
   // window.alert("Invalid Credentials");
   toast.success(message, {
     position: "top-right",
@@ -11,6 +11,7 @@ export const successMessage = (message) => {
     draggable: true,
     progress: undefined,
     theme: "colored",
+    onClose: onClose,
   });
 };
 

@@ -14,19 +14,20 @@ import { getCart, getOrder, getProducts } from "../redux/apiCall";
 import { tablet } from "../responsive";
 import BottomBanner from "./BottomBanner";
 
-// export const Countainer = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: center;
-//   align-items: center;
-//   background-color: red;
-// `;
+export const Countainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* background-color: red; */
+  /* max-width: 1080px; */
+`;
 
-// export const Wrapp = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   max-width: 1280px;
-// `;
+export const Wrapp = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-width: 1280px;
+`;
 
 export const Title = styled.p`
   font-size: 24px;
@@ -43,7 +44,7 @@ const Home = ({ togle, isOpen }) => {
 
   useEffect(() => {
     getCart(userId, dispatch);
-    getOrder(dispatch);
+    getOrder(userId, dispatch);
     getProducts(dispatch);
   }, [userId, dispatch]);
 
@@ -55,12 +56,16 @@ const Home = ({ togle, isOpen }) => {
     <>
       <ToastContainer />
       <Banner />
-      <Title>New Arrival</Title>
-      <NewArrival />
-      <Categories />
-      <BottomBanner />
-      {/* <Vidios /> */}
-      <RellsProducts />
+      <Countainer>
+        <Wrapp>
+          <Title>New Arrival</Title>
+          <NewArrival />
+          <Categories />
+          <BottomBanner />
+          {/* <Vidios /> */}
+          <RellsProducts />
+        </Wrapp>
+      </Countainer>
       <Newsletter />
       <Footer />
     </>

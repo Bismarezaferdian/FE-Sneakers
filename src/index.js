@@ -1,6 +1,7 @@
 import React from "react";
 import * as ReactDOM from "react-dom/client";
 import App from "./App";
+import "./index.css";
 import "react-toastify/dist/ReactToastify.css";
 import "swiper/swiper-bundle.css";
 import { Provider } from "react-redux";

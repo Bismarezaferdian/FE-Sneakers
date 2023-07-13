@@ -22,7 +22,11 @@ const Left = styled.div`
   padding: 20px;
 `;
 
-const Logo = styled.h1``;
+const Logo = styled.p`
+  color: #3330e4;
+  font-size: 22px;
+  font-weight: 600;
+`;
 
 const Desc = styled.p`
   margin: 20px 0px;
@@ -89,9 +93,8 @@ const Footer = () => {
       <Left>
         <Logo>SNEAKERS</Logo>
         <Desc>
-          There are many variations of passages of Lorem Ipsum available, but
-          the majority have suffered alteration in some form, by injected
-          humour, or randomised words which don’t look even slightly believable.
+          We want to help our customers find the best shoes they can buy, so
+          they can be satisfied with their purchase.
         </Desc>
         <SocialContainer>
           <SocialIcon color="3B5999">
@@ -108,7 +111,7 @@ const Footer = () => {
           </SocialIcon>
         </SocialContainer>
       </Left>
-      <Center>
+      {/* <Center>
         <Title>Useful Links</Title>
         <List>
           <ListItem>Home</ListItem>
@@ -122,12 +125,12 @@ const Footer = () => {
           <ListItem>Wishlist</ListItem>
           <ListItem>Terms</ListItem>
         </List>
-      </Center>
+      </Center> */}
       <Right>
         <Title>Contact</Title>
         <ContactItem>
-          <Room style={{ marginRight: "10px" }} /> 622 Dixie Path , South
-          Tobinchester 98336
+          <Room style={{ marginRight: "10px" }} /> JL.Jenderal Sudirman kav
+          Setiabudi Jakarta Selatan
         </ContactItem>
         <ContactItem>
           <Phone style={{ marginRight: "10px" }} /> +62 8221166095

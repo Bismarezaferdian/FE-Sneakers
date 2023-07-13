@@ -3,12 +3,18 @@ import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
 import { mobile } from "../responsive";
 import { useEffect, useState } from "react";
-import { fetchData } from "../useFetch";
 import { formatRupiah } from "../utils/formatRupiah";
-import { Box, Modal, Typography } from "@mui/material";
-import { getStatusMidtrans } from "../redux/apiCall";
+import {
+  Backdrop,
+  Box,
+  CircularProgress,
+  Modal,
+  Typography,
+} from "@mui/material";
+import { getOrder, getStatusMidtrans } from "../redux/apiCall";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { tablet } from "../responsive";
+import { useDispatch, useSelector } from "react-redux";
 
 const Container = styled.div`
   background-color: #f5f5f5;
@@ -246,26 +252,50 @@ const style = {
 };
 
 const Order = () => {
-  const [order, setOrder] = useState();
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [statusMidtrans, setStatusMidtrans] = useState();
   const [copied, setCopied] = useState(false);
+  const userId = useSelector((state) => state.user.currentUser?._id);
+  const { products } = useSelector((state) => state.order);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const getStatus = async () => {
+      try {
+        //untuk updata status
+        setLoading(true);
+        await Promise.all(
+          products.map((item) => getStatusMidtrans(item.idOrderMidtrans))
+        );
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.log(error);
+      }
+    };
+    getStatus();
+  }, [products]);
 
   useEffect(() => {
     setOpen(false);
   }, []);
 
   useEffect(() => {
-    const getOrder = async () => {
-      try {
-        const res = await fetchData.get("/orders");
-        setOrder(res.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getOrder();
-  }, []);
+    //kenapa tidak mengunakan apicall ? apakah dibutuhkan res.data untuk page ini ?
+    // const getOrder = async () => {
+    //   try {
+    //     const res = await fetchData.get(`/orders/${userId}`);
+    //     console.log(res.data);
+    //     setOrder(res.data);
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // };
+    // getOrder();
+    //coba langsung ke apicall
+    getOrder(userId, dispatch);
+  }, [userId, dispatch]);
 
   const handlePending = async (orderId) => {
     // e.preventDefault();
@@ -283,6 +313,13 @@ const Order = () => {
 
   return (
     <Container>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+        // onClick={handleClose}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       {/* <Navbar order={order} /> */}
       <Announcement />
       <Wrapper>
@@ -314,7 +351,6 @@ const Order = () => {
                   disabled
                   value={statusMidtrans?.va_numbers[0]?.va_number}
                 />
-                {/* {statusMidtrans?.va_numbers[0]?.va_number} */}
                 <CopyToClipboard
                   text={statusMidtrans?.va_numbers[0]?.va_number}
                   onCopy={handleCopy}
@@ -343,11 +379,11 @@ const Order = () => {
               <TextOrder>Dibatal</TextOrder>
             </NavTextOrder>
           </WrappNavbarOrder> */}
-          {order?.map((item, i) => (
+          {products?.map((item, i) => (
             <ContentOrder key={i}>
               <Product>
                 <WrappProduct>
-                  {item?.products?.map((products, i) => (
+                  {item?.product?.map((products, i) => (
                     <ProductContent key={i}>
                       <ProductDetail>
                         <Image src={products.imgDisplay} />
@@ -405,7 +441,6 @@ const Order = () => {
             </ContentOrder>
           ))}
         </WrappOrder>
-        <h1>order</h1>
       </Wrapper>
       <Footer />
     </Container>

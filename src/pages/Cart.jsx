@@ -4,17 +4,20 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
-import { deleteProductCart, updatecart } from "../redux/apiCall";
-import { addQty, removeQty } from "../redux/cartRedux";
+import { deleteProductCart, getCart, updatecart } from "../redux/apiCall";
+import { addCartStart, addQty, removeQty } from "../redux/cartRedux";
 import { mobile, tablet } from "../responsive";
 import { Link, useNavigate } from "react-router-dom";
 import { formatRupiah } from "../utils/formatRupiah";
 import { ToastContainer } from "react-toastify";
 import { errorMessage } from "../utils/Toastify";
+import { useEffect } from "react";
+import { Backdrop, CircularProgress } from "@mui/material";
 var debounce = require("lodash.debounce");
 
 const Container = styled.div`
   overflow: hidden;
+  background-color: #fcfdfd;
 `;
 
 const Wrapper = styled.div`
@@ -215,10 +218,10 @@ const Cart = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  //dipindah ke halaman home
-  // useEffect(() => {
-  //   getCart(userId, dispatch);
-  // }, [userId, dispatch]);
+  // dipindah ke halaman home
+  useEffect(() => {
+    getCart(userId, dispatch);
+  }, [userId, dispatch]);
 
   //handle button dengan bounce /untuk kasi jeda user bisa click button plus
   const debouncedHandleQty = debounce((item, action) => {
@@ -240,6 +243,7 @@ const Cart = () => {
   }, 1000);
 
   const handleQty = async (item, action) => {
+    dispatch(addCartStart());
     debouncedHandleQty(item, action);
   };
 
@@ -255,9 +259,28 @@ const Cart = () => {
     }
   };
 
+  // useEffect(() => {
+  //   const getOrder = async () => {
+  //     try {
+  //       const res = await fetchData.get(`/orders/63bcedad32a24fe7f8452c79`);
+  //       console.log(res.data);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   getOrder();
+  // }, []);
+
   return (
     <Container>
       <ToastContainer />
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isFetch}
+        // onClick={handleClose}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Announcement />
       <Wrapper>
         <Title>YOUR BAG</Title>

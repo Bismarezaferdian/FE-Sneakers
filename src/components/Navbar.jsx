@@ -18,13 +18,37 @@ import { logout } from "../redux/userRedux";
 import {
   AccountCircleRounded,
   ArrowRight,
+  Close,
   DensityLarge,
+  ExpandLess,
+  ExpandMore,
+  Login,
+  Logout,
+  MiscellaneousServicesOutlined,
   Person,
   Receipt,
   Search,
   ShoppingCartOutlined,
+  StarBorder,
 } from "@mui/icons-material";
-import { Badge } from "@mui/material";
+import InboxIcon from "@mui/icons-material/Inbox";
+import MailIcon from "@mui/icons-material/Mail";
+import {
+  AppBar,
+  Badge,
+  BottomNavigation,
+  Button,
+  Collapse,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  ListSubheader,
+  Paper,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 
 const Container = styled.nav`
   position: sticky;
@@ -319,17 +343,43 @@ const CartIconWrapp = styled.div`
 // export const Icon = styled(MdLogout)`
 //   font-size: 22px;
 // `;
+const ButtonLogin = styled.button`
+  font-size: 18px;
+  padding: 5px 40px;
+  /* width: 100%; */
+  background-color: #3330e4;
+  color: #ffff;
+  border: 1px solid #8696fe;
+  /* background-color: #d6e4e5; */
+  /* border: none; */
+  border-radius: 5px;
+`;
 
 const Navbar = ({ togle, isOpen }) => {
   const [sortProduct, setSortProduct] = useState("");
   const [productFilters, setProductfilters] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const qty = useSelector((state) => state.cart.qty);
-  const qtyOrder = useSelector((state) => state.order.orders);
+  const qtyOrder = useSelector((state) => state.order.products);
   const allProduct = useSelector((state) => state.product.products);
   const user = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isopen, setIsopen] = useState(false);
+  const [collapse, setCollapse] = useState(false);
+  const { categories } = useSelector((state) => state?.categorie);
+  //sidebar
+
+  const toggleDrawer = () => (event) => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+
+    setIsopen(!isopen);
+  };
 
   //input search di ambil dari filter title
   //seharusnya di cari dari database langsung
@@ -348,7 +398,8 @@ const Navbar = ({ togle, isOpen }) => {
   };
 
   const handleNavLink = (value) => {
-    navigate(`/products/${value}`);
+    navigate(value === "New Arrival" ? "/products" : `/products/${value}`);
+    setIsopen(!isopen);
   };
 
   const handleLogout = (e) => {
@@ -368,12 +419,168 @@ const Navbar = ({ togle, isOpen }) => {
     setAnchorEl(null);
   };
 
+  // sidebar
+  const list = () => (
+    <List
+      sx={{
+        width: "80vw",
+        maxWidth: "100vw",
+        height: "200vh",
+        mixHeight: "100vh",
+        bgcolor: "#3330e4;",
+        color: "white",
+      }}
+      component="nav"
+      aria-labelledby="nested-list-subheader"
+      onClose={toggleDrawer()}
+    >
+      {/* navbar */}
+      <AppBar
+        position="static"
+        sx={{
+          backgroundColor: "#3330e4",
+          boxShadow: "none",
+          padding: "10px ",
+        }}
+      >
+        <Toolbar>
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
+            onClick={toggleDrawer()}
+          >
+            <Close />
+          </IconButton>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1, textAlign: "center" }}
+          >
+            SNEAKERS
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <ListItemButton
+        onClick={toggleDrawer()}
+        sx={{
+          borderBottom: "1px solid gray ",
+          marginLeft: "10px",
+          marginRight: "10px",
+        }}
+      >
+        {/* <ListItemIcon>
+        <SendIcon />
+      </ListItemIcon> */}
+        <ListItemText
+          primary="New Arrival"
+          onClick={() => handleNavLink("New Arrival")}
+        />
+      </ListItemButton>
+      <ListItemButton
+        sx={{
+          borderBottom: "1px solid gray ",
+          marginLeft: "10px",
+          marginRight: "10px",
+        }}
+      >
+        <ListItemText primary="Mens" onClick={() => handleNavLink("men")} />
+      </ListItemButton>
+      <ListItemButton
+        sx={{
+          borderBottom: "1px solid gray ",
+          marginLeft: "10px",
+          marginRight: "10px",
+        }}
+      >
+        <ListItemText primary="Womens" onClick={() => handleNavLink("women")} />
+      </ListItemButton>
+      <ListItemButton
+        onClick={() => setCollapse(!collapse)}
+        sx={{
+          borderBottom: "1px solid gray ",
+          marginLeft: "10px",
+          marginRight: "10px",
+        }}
+      >
+        <ListItemText primary="Brands" />
+        {collapse ? <ExpandLess /> : <ExpandMore />}
+      </ListItemButton>
+      <Collapse in={collapse} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          {categories.map((item, i) => (
+            <ListItemButton
+              key={i}
+              sx={{
+                borderBottom: "1px solid gray ",
+                ml: 4.5,
+              }}
+            >
+              <ListItemText
+                primary={item.brand}
+                onClick={() => handleNavLink(item.brand)}
+              />
+            </ListItemButton>
+          ))}
+        </List>
+      </Collapse>
+      <ListItemButton
+        sx={{
+          borderBottom: "1px solid gray ",
+          marginLeft: "10px",
+          marginRight: "10px",
+        }}
+      >
+        <ListItemText primary="Shoes" onClick={() => handleNavLink("shoes")} />
+      </ListItemButton>
+      <ListItemButton
+        sx={{
+          borderBottom: "1px solid gray ",
+          marginLeft: "10px",
+          marginRight: "10px",
+        }}
+      >
+        <ListItemText
+          primary="Apparel"
+          onClick={() => handleNavLink("apparel")}
+        />
+      </ListItemButton>
+      {/* <ListItem
+        sx={{
+          alignItems: "end",
+          alignSelf: "end",
+          bottom: 0,
+          left: 0,
+        }}
+      >
+        <ListItemButton
+          sx={{
+            marginLeft: "10px",
+            marginRight: "10px",
+            bottom: 0,
+            mt: 10,
+          }}
+        >
+          <ButtonLogin>
+            <Link to={"/login"}>login</Link>
+          </ButtonLogin>
+        </ListItemButton>
+      </ListItem> */}
+    </List>
+  );
+
   return (
     <Container>
       <Wrapper>
         <MenuItems>
-          <BurgerIcon onClick={togle} />
+          <BurgerIcon onClick={toggleDrawer()} />
         </MenuItems>
+        {/* sidebar */}
+        <Drawer anchor={"left"} open={isopen} onClose={toggleDrawer()}>
+          {list()}
+        </Drawer>
         <Left>
           <Language>EN</Language>
           <SearchContainer>
@@ -414,7 +621,8 @@ const Navbar = ({ togle, isOpen }) => {
                 </SubNavLink>
               </NavLink1>
             </NavLinkWrapp>
-            <NavLink>Shoes</NavLink>
+            <NavLink onClick={() => handleNavLink("shoes")}>SHOES</NavLink>
+            <NavLink onClick={() => handleNavLink("apparel")}>APPAREL</NavLink>
           </NavWrapLink>
         </Center>
 

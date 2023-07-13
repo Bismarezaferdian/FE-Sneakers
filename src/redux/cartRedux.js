@@ -54,8 +54,8 @@ const cartSlice = createSlice({
 
   reducers: {
     addCartStart: (state) => {
-      state.error = false;
       state.isFetch = true;
+      state.error = false;
     },
 
     addToCart: (state, { payload }) => {
@@ -92,6 +92,7 @@ const cartSlice = createSlice({
           state.weight += inCart.weight;
         } else {
           // If the payload is not in the cart, add it
+          state._id = payload._id;
           state.products.push(payload.products);
           state.qty += 1;
           state.total += payload.products.quantity * payload.products.price;
@@ -104,8 +105,6 @@ const cartSlice = createSlice({
     },
 
     addQty: (state, { payload }) => {
-      state.isFetch = false;
-      state.error = false;
       // console.log(payload);
       const inCart = state.products.find(
         (item) =>
@@ -118,6 +117,8 @@ const cartSlice = createSlice({
         state.total += inCart.price;
         state.weight += inCart.weight;
       }
+      state.isFetch = false;
+      state.error = false;
     },
 
     addCartFailure: (state) => {
@@ -125,8 +126,6 @@ const cartSlice = createSlice({
       state.error = true;
     },
     removeQty: (state, { payload }) => {
-      state.isFetch = false;
-      state.error = false;
       const inCart = state.products.find(
         (item) =>
           item._id === payload._id &&
@@ -154,6 +153,8 @@ const cartSlice = createSlice({
         state.qty -= 1;
         state.weight -= inCart.weight;
       }
+      state.isFetch = false;
+      state.error = false;
     },
     resetState: () => initialState,
   },

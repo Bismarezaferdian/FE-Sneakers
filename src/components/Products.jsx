@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { getProducts } from "../redux/apiCall";
+import { getProductNewArrival, getProducts } from "../redux/apiCall";
 import Product from "./Product";
 import { tablet } from "../responsive";
 
@@ -53,8 +53,6 @@ const Products = ({ cat, filters, sort }) => {
   //   );
   // }, [allProduct, filters, productFilters]);
 
-  // console.log(state);
-
   useEffect(() => {
     if (state) {
       if (sort === "newest") {
@@ -70,11 +68,17 @@ const Products = ({ cat, filters, sort }) => {
       }
     } else if (allProduct) {
       if (sort === "newest") {
-        setProduct((prev) =>
-          [...prev].sort(
-            (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
-          )
-        );
+        const getData = async () => {
+          const res = await getProductNewArrival();
+          setProduct(res);
+        };
+        getData();
+
+        // setProduct((prev) =>
+        //   [...prev].sort(
+        //     (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+        //   )
+        // );
       } else if (sort === "asc") {
         setProduct((prev) => [...prev].sort((a, b) => a.price - b.price));
       } else if (sort === "desc") {
@@ -83,7 +87,6 @@ const Products = ({ cat, filters, sort }) => {
     }
   }, [sort, state, allProduct]);
 
-  console.log(productFilter);
   return (
     <Container>
       {productFilter?.length > 0

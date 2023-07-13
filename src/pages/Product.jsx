@@ -14,9 +14,10 @@ import { fetchData } from "../useFetch";
 import Sliders from "../components/Slider";
 import { updatecart } from "../redux/apiCall";
 import { Add, Remove } from "@mui/icons-material";
-import { errorMessage } from "../utils/Toastify";
+import { errorMessage, successMessage } from "../utils/Toastify";
 import { ToastContainer } from "react-toastify";
 import { formatRupiah } from "../utils/formatRupiah";
+import { Backdrop, CircularProgress } from "@mui/material";
 
 const Container = styled.div``;
 
@@ -181,6 +182,7 @@ const Product = () => {
   const location = useLocation();
   const id = location.pathname.split("/")[2];
   const userId = useSelector((state) => state.user.currentUser?._id);
+  const { isFetch } = useSelector((state) => state.cart);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [product, setProduct] = useState({});
@@ -290,19 +292,13 @@ const Product = () => {
     setClicked(newClicked);
   };
 
-  const rubValidate = () => {
+  const runValidate = () => {
     setValidate(true);
   };
 
   const handleAddToChart = () => {
-    // const inCart = cart.find(
-    //   (cart) =>
-    //     cart._id === product._id &&
-    //     cart.color === products.color &&
-    //     cart.size === products.size
-    // );
     if (!variant.color || !variant.size) {
-      rubValidate();
+      runValidate();
     } else if (variant.stock <= 0) {
       errorMessage("product sudah habis !");
     } else if (userId) {
@@ -319,6 +315,7 @@ const Product = () => {
       updatecart(userId, { products: products }, dispatch);
       //langsung ke cart redux untuk add cart di redux
       dispatch(addToCart({ userId, products: products }));
+      successMessage("success add to cart !");
     } else {
       alert("silahkan login dahulu");
       navigate("/login");
@@ -341,6 +338,13 @@ const Product = () => {
   return (
     <Container>
       <ToastContainer />
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isFetch}
+        // onClick={handleClose}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Announcement />
       <Wrapper>
         <ImgContainer>

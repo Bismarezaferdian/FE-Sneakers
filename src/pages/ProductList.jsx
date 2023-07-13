@@ -6,8 +6,12 @@ import Footer from "../components/Footer";
 import { tablet } from "../responsive";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Backdrop, CircularProgress } from "@mui/material";
 
-const Container = styled.div``;
+const Container = styled.div`
+  background-color: #fcfdfd;
+`;
 
 const Title = styled.p`
   margin: 20px;
@@ -42,6 +46,7 @@ const Option = styled.option``;
 const ProductList = () => {
   // const { state } = useLocation();
   // const { productFilters } = state;
+  const { isFetching } = useSelector((state) => state.product);
   const location = useLocation();
   const id = location.pathname?.split("/")[2];
   const [filters, setFilters] = useState({});
@@ -56,6 +61,13 @@ const ProductList = () => {
 
   return (
     <Container>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isFetching}
+        // onClick={handleClose}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Announcement />
       <Title>{id ? id : "allProduct"}</Title>
       <FilterContainer>
