@@ -188,6 +188,7 @@ const NavLink = styled.button`
   border: none;
   /* margin: 0 10px; */
   padding: 0 10px;
+  background-color: black;
   cursor: pointer;
 `;
 const NavLink1 = styled.div`
