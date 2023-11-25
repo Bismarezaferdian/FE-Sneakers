@@ -272,10 +272,10 @@ const Product = () => {
     setSizeDisplay(data?.size);
   }, [color, variants]);
 
-  //
   const handleClick = (item) => {
     //membuat object baru
     const newClicked = { ...clicked };
+    console.log(newClicked);
     Object.keys(newClicked).forEach((key) => {
       //jika key tidak sama dengan item set semua ke false
       //kondisi 1

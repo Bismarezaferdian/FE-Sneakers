@@ -16,19 +16,19 @@ const userSlice = createSlice({
     },
     loginSuccess: (state, action) => {
       state.isFetching = false;
+      state.error = false;
       state.currentUser = action.payload;
     },
 
     loginFailure: (state, { payload }) => {
-      console.log(payload);
       state.error = true;
       state.isFetching = false;
       state.massageError = payload;
     },
     logout: (state) => {
+      state.isFetching = false;
       state.currentUser = null;
       state.error = false;
-      state.isFetching = false;
       state.massageError = "";
     },
   },

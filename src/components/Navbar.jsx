@@ -22,30 +22,19 @@ import {
   DensityLarge,
   ExpandLess,
   ExpandMore,
-  Login,
-  Logout,
-  MiscellaneousServicesOutlined,
   Person,
   Receipt,
   Search,
   ShoppingCartOutlined,
-  StarBorder,
 } from "@mui/icons-material";
-import InboxIcon from "@mui/icons-material/Inbox";
-import MailIcon from "@mui/icons-material/Mail";
 import {
   AppBar,
   Badge,
-  BottomNavigation,
-  Button,
   Collapse,
   Drawer,
   List,
-  ListItem,
   ListItemButton,
   ListItemText,
-  ListSubheader,
-  Paper,
   Toolbar,
   Typography,
 } from "@mui/material";
@@ -197,6 +186,7 @@ const NavLink = styled.button`
   font-size: 14px;
   background: none;
   border: none;
+  margin: 0 10px;
   cursor: pointer;
 `;
 const NavLink1 = styled.div`
@@ -219,7 +209,7 @@ const SubNavLink = styled.button`
   color: #5d697a; */
   float: none;
   color: #5d697a;
-  padding: 12px 16px;
+  margin: 12px 16px;
   text-decoration: none;
   display: block;
   text-align: left;
@@ -340,21 +330,6 @@ const CartIconWrapp = styled.div`
   ${mobile({ fontSize: "12px", marginLeft: "10px" })}
 `;
 
-// export const Icon = styled(MdLogout)`
-//   font-size: 22px;
-// `;
-const ButtonLogin = styled.button`
-  font-size: 18px;
-  padding: 5px 40px;
-  /* width: 100%; */
-  background-color: #3330e4;
-  color: #ffff;
-  border: 1px solid #8696fe;
-  /* background-color: #d6e4e5; */
-  /* border: none; */
-  border-radius: 5px;
-`;
-
 const Navbar = ({ togle, isOpen }) => {
   const [sortProduct, setSortProduct] = useState("");
   const [productFilters, setProductfilters] = useState([]);
@@ -381,6 +356,8 @@ const Navbar = ({ togle, isOpen }) => {
     setIsopen(!isopen);
   };
 
+  console.log(qtyOrder);
+
   //input search di ambil dari filter title
   //seharusnya di cari dari database langsung
   useEffect(() => {
@@ -399,7 +376,7 @@ const Navbar = ({ togle, isOpen }) => {
 
   const handleNavLink = (value) => {
     navigate(value === "New Arrival" ? "/products" : `/products/${value}`);
-    setIsopen(!isopen);
+    // setIsopen(!isopen);
   };
 
   const handleLogout = (e) => {
@@ -472,8 +449,8 @@ const Navbar = ({ togle, isOpen }) => {
         }}
       >
         {/* <ListItemIcon>
-        <SendIcon />
-      </ListItemIcon> */}
+      <SendIcon />
+    </ListItemIcon> */}
         <ListItemText
           primary="New Arrival"
           onClick={() => handleNavLink("New Arrival")}
@@ -484,6 +461,7 @@ const Navbar = ({ togle, isOpen }) => {
           borderBottom: "1px solid gray ",
           marginLeft: "10px",
           marginRight: "10px",
+          bgcolor: "#3330e4;",
         }}
       >
         <ListItemText primary="Mens" onClick={() => handleNavLink("men")} />
@@ -547,27 +525,6 @@ const Navbar = ({ togle, isOpen }) => {
           onClick={() => handleNavLink("apparel")}
         />
       </ListItemButton>
-      {/* <ListItem
-        sx={{
-          alignItems: "end",
-          alignSelf: "end",
-          bottom: 0,
-          left: 0,
-        }}
-      >
-        <ListItemButton
-          sx={{
-            marginLeft: "10px",
-            marginRight: "10px",
-            bottom: 0,
-            mt: 10,
-          }}
-        >
-          <ButtonLogin>
-            <Link to={"/login"}>login</Link>
-          </ButtonLogin>
-        </ListItemButton>
-      </ListItem> */}
     </List>
   );
 

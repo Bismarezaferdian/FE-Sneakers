@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import styled from "styled-components";
 import { login } from "../redux/apiCall";
 import GoogleIcon from "@mui/icons-material/Google";
-import { mobile, tablet } from "../responsive";
-import { Link, useNavigate } from "react-router-dom";
+import { tablet } from "../responsive";
+import { Link } from "react-router-dom";
 import { FacebookOutlined } from "@mui/icons-material";
 import { Backdrop, CircularProgress } from "@mui/material";
 import { ToastContainer } from "react-toastify";
@@ -13,7 +12,6 @@ import { ToastContainer } from "react-toastify";
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
-
   /* background: linear-gradient(
       rgba(255, 255, 255, 0.5),
       rgba(255, 255, 255, 0.5)
@@ -30,11 +28,6 @@ const Container = styled.div`
 `;
 
 const Top = styled.div``;
-
-const Image = styled.img`
-  width: 200px;
-  height: 200px;
-`;
 
 const Wrapper = styled.div`
   width: 25%;
@@ -128,10 +121,7 @@ const Login = () => {
   const handleClick = (e) => {
     e.preventDefault();
     login(dispatch, { email, password });
-    // const res = await fetchData.post("/auth/login", { email, password });
-    // console.log(res.data);
   };
-  console.log(isFetching);
 
   return (
     <Container>
@@ -139,7 +129,6 @@ const Login = () => {
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={isFetching}
-        // onClick={handleClose}
       >
         <CircularProgress color="inherit" />
       </Backdrop>

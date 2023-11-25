@@ -62,7 +62,6 @@ const Home = ({ togle, isOpen }) => {
           <NewArrival />
           <Categories />
           <BottomBanner />
-          {/* <Vidios /> */}
           <RellsProducts />
         </Wrapp>
       </Countainer>
