@@ -186,7 +186,8 @@ const NavLink = styled.button`
   font-size: 14px;
   background: none;
   border: none;
-  margin: 0 10px;
+  /* margin: 0 10px; */
+  padding: 0 10px;
   cursor: pointer;
 `;
 const NavLink1 = styled.div`
